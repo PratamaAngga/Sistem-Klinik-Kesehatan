@@ -30,4 +30,30 @@ class ObatModel {
             ':harga' => $harga
         ]);
     }
+
+    public function updateObat($id, $nama, $jenis, $stok, $harga)
+    {
+        $query = $this->db->prepare("
+            UPDATE obat
+            SET nama_obat = :nama,
+                jenis_obat = :jenis,
+                stok = :stok,
+                harga_satuan = :harga
+            WHERE obat_id = :id
+        ");
+
+        $query->execute([
+            ':id' => $id,
+            ':nama' => $nama,
+            ':jenis' => $jenis,
+            ':stok' => $stok,
+            ':harga' => $harga
+        ]);
+    }
+
+    public function deleteObat($id)
+    {
+        $query = $this->db->prepare("DELETE FROM obat WHERE obat_id = :id");
+        $query->execute([':id' => $id]);
+    }
 }

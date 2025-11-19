@@ -25,4 +25,24 @@ class ObatController {
 
         header("Location: index.php?page=kelola-obat");
     }
+
+    public function update($request)
+    {
+        $this->model->updateObat(
+            $request['obat_id'],
+            $request['nama_obat'],
+            $request['jenis'],
+            $request['stok'],
+            $request['harga_satuan']
+        );
+
+        header("Location: index.php?page=kelola-obat");
+    }
+
+    public function delete($request)
+    {
+        $this->model->deleteObat($request['obat_id']);
+        header("Location: index.php?page=kelola-obat");
+    }
+
 }

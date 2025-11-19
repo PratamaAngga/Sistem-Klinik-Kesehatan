@@ -54,8 +54,29 @@
                                 <td><?= $obat['stok']; ?></td>
                                 <td><?= number_format($obat['harga_satuan'], 0, ',', '.'); ?></td>
                                 <td class="d-flex justify-content-around">
-                                    <button class="btn btn-warning"><i class="fas fa-pen"></i></button>
-                                    <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
+                                    <button 
+                                        class="btn btn-warning btn-edit"
+                                        data-id="<?= $obat['obat_id']; ?>"
+                                        data-nama="<?= $obat['nama_obat']; ?>"
+                                        data-jenis="<?= $obat['jenis_obat']; ?>"
+                                        data-stok="<?= $obat['stok']; ?>"
+                                        data-harga="<?= $obat['harga_satuan']; ?>"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editObatModal"
+                                    >
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+
+                                    <button 
+                                        class="btn btn-danger btn-delete"
+                                        data-id="<?= $obat['obat_id']; ?>"
+                                        data-nama="<?= $obat['nama_obat']; ?>"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteObatModal"
+                                    >
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -106,6 +127,93 @@
                                 <button type="submit" class="btn btn-primary">Simpan</button>
                               </div>
 
+                            </form>
+
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- MODAL EDIT OBAT -->
+                      <div class="modal fade" id="editObatModal" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                          <div class="modal-content">
+
+                            <div class="modal-header">
+                              <h5 class="modal-title fw-bold">Edit Obat</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <form action="index.php?page=update-obat" method="POST">
+                              <input type="hidden" name="obat_id" id="edit_obat_id">
+
+                              <div class="modal-body">
+
+                                <div class="mb-3">
+                                  <label class="form-label">Nama Obat</label>
+                                  <input type="text" name="nama_obat" id="edit_nama" class="form-control" required>
+                                </div>
+
+                                <div class="mb-3">
+                                  <label class="form-label">Jenis Obat</label>
+                                  <select name="jenis" id="edit_jenis" class="form-select" required>
+                                    <option value="Tablet">Tablet</option>
+                                    <option value="Kapsul">Kapsul</option>
+                                    <option value="Cair">Cair</option>
+                                  </select>
+                                </div>
+
+                                <div class="mb-3">
+                                  <label class="form-label">Stok</label>
+                                  <input type="number" name="stok" id="edit_stok" class="form-control" required>
+                                </div>
+
+                                <div class="mb-3">
+                                  <label class="form-label">Harga Satuan</label>
+                                  <input type="number" name="harga_satuan" id="edit_harga" class="form-control" required>
+                                </div>
+
+                              </div>
+
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                              </div>
+
+                            </form>
+
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- MODAL DELETE OBAT -->
+                      <div class="modal fade" id="deleteObatModal" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+
+                            <div class="modal-header">
+                              <h5 class="modal-title fw-bold text-danger">Hapus Obat</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+
+                            <form action="index.php?page=delete-obat" method="POST">
+                              <input type="hidden" name="obat_id" id="delete_obat_id">
+
+                              <div class="modal-body">
+                                <p class="mb-0 fs-6">
+                                  Apa kamu yakin ingin menghapus obat ini?
+                                </p>
+                                <p class="text-danger fw-bold mt-1" id="delete_obat_nama"></p>
+                                <small class="text-muted">Data yang sudah dihapus tidak bisa dikembalikan.</small>
+                              </div>
+
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                  Batal
+                                </button>
+                                <button type="submit" class="btn btn-danger">
+                                  Hapus
+                                </button>
+                              </div>
                             </form>
 
                           </div>

@@ -12,6 +12,15 @@ if ($page === 'kelola-obat') {
     $controller = new ObatController();
     $controller->store($_POST);
     exit;
+} elseif ($page === 'update-obat') {
+    require_once "controller/ObatController.php";
+    $controller = new ObatController();
+    $controller->update($_POST);
+    exit;
+} elseif ($page === 'delete-obat') {
+    $controller = new ObatController();
+    $controller->delete($_POST);
+    exit;
 } else {
     $view = "Views/dashboard.php";
 }
@@ -114,6 +123,24 @@ if ($page === 'kelola-obat') {
         }
     });
     </script>
+    <script>
+      $(document).on('click', '.btn-edit', function () {
+
+          $("#edit_obat_id").val($(this).data('id'));
+          $("#edit_nama").val($(this).data('nama'));
+          $("#edit_jenis").val($(this).data('jenis')).change();
+          $("#edit_stok").val($(this).data('stok'));
+          $("#edit_harga").val($(this).data('harga'));
+
+      });
+      $(document).on('click', '.btn-delete', function () {
+
+          $("#delete_obat_id").val($(this).data('id'));
+          $("#delete_obat_nama").text($(this).data('nama'));
+
+      });
+    </script>
+
     <script>
       $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
         type: "line",
