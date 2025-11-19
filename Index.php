@@ -1,90 +1,146 @@
+<?php
+require_once __DIR__ . "/controller/ObatController.php";
+
+$page = $_GET['page'] ?? 'dashboard';
+
+if ($page === 'kelola-obat') {
+    $controller = new ObatController();
+    $dataObat = $controller->index();
+    $view = "Views/kelola-obat.php";
+} elseif ($page === 'store-obat') {
+    require_once "controller/ObatController.php";
+    $controller = new ObatController();
+    $controller->store($_POST);
+    exit;
+} else {
+    $view = "Views/dashboard.php";
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistem</title>
-  <link rel="stylesheet" href="Assets/style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Sistem Informasi Klinik Kesehatan</title>
+    <meta
+      content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+      name="viewport"
+    />
+    <link
+      rel="icon"
+      href="assets/img/kaiadmin/favicon.ico"
+      type="image/x-icon"
+    />
 
-  
-  <div class="d-flex">
-    <!-- Sidebar tetap -->
-    <?php include 'Includes/sidebar.php'; ?>
-    
-    <!-- Area Konten -->
-    <div class="content flex-grow-1" id="content-area">
-      <!-- Header -->
-      <?php include 'Includes/header.php'; ?>
-      <?php include 'views/dashboard.php'; // halaman default ?>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-  <script>
-    // Script untuk load konten dinamis
-    $(document).ready(function() {
-      // Saat klik menu di sidebar
-      $('.sidebar a').on('click', function(e) {
-        e.preventDefault();
-
-        let url = $(this).attr('href');
-        let pageName = url.split('/').pop(); // ambil nama file misal "dashboard.php"
-
-        // Load konten tanpa reload halaman
-        $('#content-area').load('views/' + pageName);
-
-        // Update active menu
-        $('.sidebar a').removeClass('active');
-        $(this).addClass('active');
+    <!-- Fonts and icons -->
+    <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["assets/css/fonts.min.css"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
       });
-    });
-  </script>
+    </script>
 
-</body>
-</html>
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/plugins.min.css" />
+    <link rel="stylesheet" href="assets/css/kaiadmin.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- Sidebar -->
+      <?php include 'Includes/sidebar.php'; ?>
+      <!-- End Sidebar -->
 
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - CMS</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-</head>
-<body>
-    <div class="container">
-        <div class="sidebar">
-            <div class="logo">
-                <img src="" alt="">
-            </div>
-            <div class="menu">
-                <ul>
-                    <li><a href="views/dashboard.php">Dashboard</a></li>
-                    <li><a href="views/manage-member.php">Kelola Member Lab</a></li>
-                    <li><a href="views/manage-product.php">Kelola Produk</a></li>
-                    <button class="drupdown">Hasil Karya Ilmiah</button>
-                    <div class="dropdown-container">
-                        <li><a href="views/publikasi.php">Publikasi</a></li>
-                        <li><a href="views/riset.php">Riset</a></li>
-                        <li><a href="views/kekayaan-intelektual.php">Kekayaan Intelektual</a></li>
-                        <li><a href="views/ppm.php">PPM</a></li>
-                    </div>
-                    <li><a href="views/manage-facility.php">Kelola Fasilitas</a></li>
-                    <li><a href="views/manage-specialization.php">Kelola Spesialisasi</a></li>
-                </ul>
-            </div>
-        </div>
+      <div class="main-panel">
+        <?php include 'Includes/header.php'; ?>
         
+
+        <div class="container"  id="content-area">
+          <?php include $view; ?>
+        </div>
+
+        <!-- Footer -->
+        <?php include 'Includes/footer.php'; ?>
+      </div>
     </div>
-</body>
-</html> -->
+    <!--   Core JS Files   -->
+    <script src="assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="assets/js/core/popper.min.js"></script>
+    <script src="assets/js/core/bootstrap.min.js"></script>
+
+    <!-- jQuery Scrollbar -->
+    <script src="assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+    <!-- Chart JS -->
+    <script src="assets/js/plugin/chart.js/chart.min.js"></script>
+
+    <!-- jQuery Sparkline -->
+    <script src="assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+    <!-- Chart Circle -->
+    <script src="assets/js/plugin/chart-circle/circles.min.js"></script>
+
+    <!-- Datatables -->
+    <script src="assets/js/plugin/datatables/datatables.min.js"></script>
+
+    <!-- Bootstrap Notify -->
+    <script src="assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+    <!-- jQuery Vector Maps -->
+    <script src="assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+    <script src="assets/js/plugin/jsvectormap/world.js"></script>
+
+    <!-- Sweet Alert -->
+    <script src="assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+    <!-- Kaiadmin JS -->
+    <script src="assets/js/kaiadmin.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        if ($("#basic-datatables").length) {
+            $("#basic-datatables").DataTable();
+        }
+    });
+    </script>
+    <script>
+      $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
+        type: "line",
+        height: "70",
+        width: "100%",
+        lineWidth: "2",
+        lineColor: "#177dff",
+        fillColor: "rgba(23, 125, 255, 0.14)",
+      });
+
+      $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
+        type: "line",
+        height: "70",
+        width: "100%",
+        lineWidth: "2",
+        lineColor: "#f3545d",
+        fillColor: "rgba(243, 84, 93, .14)",
+      });
+
+      $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
+        type: "line",
+        height: "70",
+        width: "100%",
+        lineWidth: "2",
+        lineColor: "#ffa534",
+        fillColor: "rgba(255, 165, 52, .14)",
+      });
+    </script>
+  </body>
+</html>
