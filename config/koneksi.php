@@ -2,7 +2,7 @@
 class Koneksi {
     private $host = "localhost";
     private $port = "5433";
-    private $dbname = "db_klinik_kesehatan";
+    private $dbname = "klinik_kesehatan";
     private $user = "postgres";
     private $password = "12345678";
     public $conn;

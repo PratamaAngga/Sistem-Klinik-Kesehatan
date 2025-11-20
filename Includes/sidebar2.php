@@ -44,7 +44,7 @@
         <!-- ✅ MENU BARU: KELOLA SPESIALISASI -->
         <li class="nav-item <?= $page == 'kelola-spesialisasi' ? 'active' : '' ?>">
           <a href="index.php?page=kelola-spesialisasi">
-            <i class="fas fa-medkit"></i>
+            <i class="fas fa-user-md"></i>
             <p>Kelola Spesialisasi</p>
           </a>
         </li>
