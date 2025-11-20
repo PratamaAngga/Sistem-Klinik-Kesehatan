@@ -9,7 +9,7 @@ The system developed in this assignment is the Health Clinic Information System,
 
 - [@PratamaAngga](https://github.com/PratamaAngga) Pratama Angga Saputra / SIB 2 G / 244107060113
 - [@ganangputra31](https://github.com/ganangputra31) Ganang Andika Kurnia Putra / SIB 2 G / 244107060008
-- [@muchnabil](https://github.com/muchnabil) Muchammad Nabil Haykal Widarto / SIB 2 G / 2341760152
+- [@muchnabil](https://github.com/muchnabil) Muchammad Nabil Haykal W. / SIB 2 G / 2341760152
 
 
 
