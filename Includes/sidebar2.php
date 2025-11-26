@@ -41,6 +41,15 @@
           </a>
         </li>
 
+        <!-- ✅ MENU BARU: KELOLA PASIEN -->
+        <li class="nav-item <?= $page == 'kelola-pasien' ? 'active' : '' ?>">
+          <a href="index.php?page=kelola-pasien">
+            <i class="fas fa-user-md"></i>
+            <p>Kelola Pasien</p>
+          </a>
+        </li>
+        <!-- ✅ END MENU BARU -->
+
         <!-- ✅ MENU BARU: KELOLA SPESIALISASI -->
         <li class="nav-item <?= $page == 'kelola-spesialisasi' ? 'active' : '' ?>">
           <a href="index.php?page=kelola-spesialisasi">
