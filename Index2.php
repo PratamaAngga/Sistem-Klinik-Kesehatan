@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/controller/ObatController.php";
+require_once __DIR__ . "/controller/PasienController.php";
 require_once __DIR__ . "/controller/SpesialisasiController.php";
 
 $page = $_GET['page'] ?? 'dashboard';
@@ -21,6 +22,26 @@ if ($page === 'kelola-obat') {
 
 } elseif ($page === 'delete-obat') {
     $controller = new ObatController();
+    $controller->delete($_POST);
+    exit;
+
+} else if($page === 'kelola-pasien') {
+    $controller = new PasienController();
+    $dataPasien = $controller->index();
+    $view = "Views/kelola-pasien.php";
+
+} elseif ($page === 'store-pasien') {
+    $controller = new PasienController();
+    $controller->store($_POST);
+    exit;
+
+} elseif ($page === 'update-pasien') {
+    $controller = new PasienController();
+    $controller->update($_POST);
+    exit;
+
+} elseif ($page === 'delete-pasien') {
+    $controller = new PasienController();
     $controller->delete($_POST);
     exit;
 
@@ -161,6 +182,25 @@ if ($page === 'kelola-obat') {
 
           $("#delete_obat_id").val($(this).data('id'));
           $("#delete_obat_nama").text($(this).data('nama'));
+
+      });
+    </script>
+
+    <script>
+      $(document).on('click', '.btn-edit', function () {
+
+          $("#edit_pasien_id").val($(this).data('id'));
+          $("#edit_nama").val($(this).data('nama'));
+          $("#edit_tanggal_lahir").val($(this).data('tanggal')).change();
+          $("#edit_jenis_kelamin").val($(this).data('kelamin'));
+          $("#edit_no_telp").val($(this).data('telp'));
+          $("#edit_alamat").val($(this).data('alamat'));
+
+      });
+      $(document).on('click', '.btn-delete', function () {
+
+          $("#delete_pasien_id").val($(this).data('id'));
+          $("#delete_pasien_nama").text($(this).data('nama'));
 
       });
     </script>

@@ -1,10 +1,10 @@
 <?php
 class Koneksi {
     private $host = "localhost";
-    private $port = "5433";
+    private $port = "5432";
     private $dbname = "klinik_kesehatan";
     private $user = "postgres";
-    private $password = "12345678";
+    private $password = "123";
     public $conn;
 
     public function getKoneksi()
