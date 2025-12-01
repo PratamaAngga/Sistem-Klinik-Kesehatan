@@ -27,6 +27,19 @@ class PasienModel {
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // === FUNGSI BARU, TAMBAHAN UNTUK HALAMAN REKAM MEDIS ===
+    public function getPasienById($id)
+    {
+        $query = $this->db->prepare("
+            SELECT * FROM pasien
+            WHERE pasien_id = :id
+            LIMIT 1
+        ");
+        $query->execute([':id' => $id]);
+        return $query->fetch(PDO::FETCH_ASSOC);
+    }
+    // =======================================================
+
     public function insertPasien($nama, $tanggal_lahir, $jenis_kelamin, $no_telp, $alamat)
     {
         $query = $this->db->prepare("
@@ -64,8 +77,6 @@ class PasienModel {
             ':alamat' => $alamat
         ]);
     }
-
-    
 
     public function deletePasien($id)
     {

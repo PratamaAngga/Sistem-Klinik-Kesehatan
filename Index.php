@@ -1,7 +1,12 @@
 <?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once __DIR__ . "/controller/ObatController.php";
 require_once __DIR__ . "/controller/PasienController.php";
 require_once __DIR__ . "/controller/SpesialisasiController.php";
+require_once __DIR__ . "/controller/RekamMedisController.php"; // << TAMBAHAN
 
 $page = $_GET['page'] ?? 'dashboard';
 
@@ -64,6 +69,24 @@ if ($page === 'kelola-obat') {
     $controller = new SpesialisasiController();
     $controller->delete($_POST);
     exit;
+
+} elseif ($page === 'rekam-medis') { // << BLOK BARU
+
+    $pasien_id = $_GET['pasien_id'] ?? null;
+
+    if (!$pasien_id) {
+        header("Location: index.php?page=kelola-pasien");
+        exit;
+    }
+
+    $controller = new RekamMedisController();
+    $data = $controller->index($pasien_id);
+
+    // variabel yang dipakai di view
+    $pasien      = $data['pasien'];
+    $rekam_medis = $data['rekam_medis'];
+
+    $view = "Views/rekam-medis.php";
 
 } else {
     $view = "Views/dashboard.php";

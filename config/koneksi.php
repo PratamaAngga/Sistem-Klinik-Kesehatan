@@ -4,7 +4,7 @@ class Koneksi {
     private $port = "5434";
     private $dbname = "klinik_kesehatan";
     private $user = "postgres";
-    private $password = "123";
+    private $password = "12345678";
     public $conn;
 
     public function getKoneksi()
