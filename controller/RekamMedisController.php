@@ -12,14 +12,21 @@ class RekamMedisController {
         $this->pasienModel = new PasienModel();
     }
 
-    public function index($pasien_id)
-    {
-        $pasien     = $this->pasienModel->getPasienById($pasien_id);
-        $rekamMedis = $this->rekamModel->getByPasienId($pasien_id);
+public function index($pasien_id)
+{
+    $pasien     = $this->pasienModel->getPasienById($pasien_id);
+    $rekamMedis = $this->rekamModel->getByPasienId($pasien_id);
 
-        return [
-            'pasien'      => $pasien,
-            'rekam_medis' => $rekamMedis,
-        ];
+    // tambahkan daftar obat ke setiap rekam medis
+    foreach ($rekamMedis as &$rm) {
+        $rm['obat'] = $this->rekamModel->getObatByRekamId($rm['rekam_id']);
     }
+    unset($rm); // supaya aman
+
+    return [
+        'pasien'      => $pasien,
+        'rekam_medis' => $rekamMedis,
+    ];
+}
+
 }
