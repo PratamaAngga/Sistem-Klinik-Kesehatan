@@ -111,7 +111,7 @@ if ($page === 'kelola-obat') {
     $controller->delete($_POST);
     exit;
 
-} elseif ($page === 'rekam-medis') { // << BLOK BARU
+} elseif ($page === 'rekam-medis') {
 
     $pasien_id = $_GET['pasien_id'] ?? null;
 
