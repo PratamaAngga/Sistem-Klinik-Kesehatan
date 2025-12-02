@@ -8,6 +8,8 @@ require_once __DIR__ . "/controller/PasienController.php";
 require_once __DIR__ . "/controller/SpesialisasiController.php";
 require_once __DIR__ . "/controller/RekamMedisController.php";
 require_once __DIR__ . "/controller/DokterController.php";
+require_once __DIR__ . "/controller/FunctionController.php";
+
 
 $page = $_GET['page'] ?? 'dashboard';
 
@@ -107,6 +109,29 @@ if ($page === 'kelola-obat') {
     $rekam_medis = $data['rekam_medis'];
 
     $view = "Views/rekam-medis.php";
+
+} elseif ($page === 'fungsi-total-biaya-obat') {
+
+    $rekam_id = $_GET['rekam_id'] ?? 1; // default 1 biar gampang test
+    $controller = new FunctionController();
+    $data = $controller->totalBiayaObat($rekam_id);
+
+    $rekam_id = $data['rekam_id'];
+    $total_biaya_obat = $data['total_biaya_obat'];
+
+    $view = "Views/fungsi-total-biaya-obat.php";
+
+} elseif ($page === 'fungsi-jadwal-dokter') {
+
+    $tanggal = $_GET['tanggal'] ?? date('Y-m-d');
+    $controller = new FunctionController();
+    $data = $controller->jadwalDokterByTanggal($tanggal);
+
+    $tanggal = $data['tanggal'];
+    $jadwal  = $data['jadwal'];
+
+    $view = "Views/fungsi-jadwal-dokter.php";
+
 
 } else {
     $view = "Views/dashboard.php";
