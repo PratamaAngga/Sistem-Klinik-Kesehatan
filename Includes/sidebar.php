@@ -58,6 +58,12 @@
             <p>Kelola Dokter</p>
           </a>
         </li>
+        <li class="nav-item <?= $page == 'kelola-jadwal' ? 'active' : '' ?>">
+          <a href="index.php?page=kelola-jadwal">
+            <i class="fas fa-clipboard-list"></i>
+            <p>Kelola Jadwal Praktek</p>
+          </a>
+        </li>
       </ul>
     </div>
   </div>
