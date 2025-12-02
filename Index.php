@@ -6,7 +6,8 @@ ini_set('display_errors', 1);
 require_once __DIR__ . "/controller/ObatController.php";
 require_once __DIR__ . "/controller/PasienController.php";
 require_once __DIR__ . "/controller/SpesialisasiController.php";
-require_once __DIR__ . "/controller/RekamMedisController.php"; // << TAMBAHAN
+require_once __DIR__ . "/controller/RekamMedisController.php";
+require_once __DIR__ . "/controller/DokterController.php";
 
 $page = $_GET['page'] ?? 'dashboard';
 
@@ -67,6 +68,25 @@ if ($page === 'kelola-obat') {
 
 } elseif ($page === 'delete-spesialisasi') {
     $controller = new SpesialisasiController();
+    $controller->delete($_POST);
+    exit;
+} elseif ($page === 'kelola-dokter') {
+    $controller = new DokterController();
+    $dataDokter = $controller->index();
+    $view = "Views/kelola-dokter.php";
+
+} elseif ($page === 'store-dokter') {
+    $controller = new DokterController();
+    $controller->store($_POST);
+    exit;
+
+} elseif ($page === 'update-dokter') {
+    $controller = new DokterController();
+    $controller->update($_POST);
+    exit;
+
+} elseif ($page === 'delete-dokter') {
+    $controller = new DokterController();
     $controller->delete($_POST);
     exit;
 
@@ -209,7 +229,7 @@ if ($page === 'kelola-obat') {
       });
     </script>
 
-        <script>
+    <script>
       $(document).on('click', '.btn-edit', function () {
 
           $("#edit_pasien_id").val($(this).data('id'));
@@ -226,9 +246,6 @@ if ($page === 'kelola-obat') {
           $("#delete_pasien_nama").text($(this).data('nama'));
 
       });
-    </script>
-
-    <script>
       $(document).on('click', '.btn-edit-spesialisasi', function () {
           $("#edit_spesialisasi_id").val($(this).data('id'));
           $("#edit_nama_spesialisasi").val($(this).data('nama'));
@@ -240,34 +257,18 @@ if ($page === 'kelola-obat') {
           $("#delete_spesialisasi_id").val($(this).data('id'));
           $("#delete_spesialisasi_nama").text($(this).data('nama'));
       });
-    </script>
 
-    <script>
-      $("#lineChart").sparkline([102, 109, 120, 99, 110, 105, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#177dff",
-        fillColor: "rgba(23, 125, 255, 0.14)",
+      $(document).on('click', '.btn-edit-dokter', function () {
+          $("#edit_dokter_id").val($(this).data('id_dokter'));
+          $("#edit_name_dokter").val($(this).data('nama'));
+          $("#edit_no_str_dokter").val($(this).data('no_str'));
+          $("#edit_no_telp_dokter").val($(this).data('no_telp'));
+          $("#edit_spesialisasi_dokter").val($(this).data('spesialisasi'));
       });
 
-      $("#lineChart2").sparkline([99, 125, 122, 105, 110, 124, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#f3545d",
-        fillColor: "rgba(243, 84, 93, .14)",
-      });
-
-      $("#lineChart3").sparkline([105, 103, 123, 100, 95, 105, 115], {
-        type: "line",
-        height: "70",
-        width: "100%",
-        lineWidth: "2",
-        lineColor: "#ffa534",
-        fillColor: "rgba(255, 165, 52, .14)",
+      $(document).on('click', '.btn-delete-dokter', function () {
+          $("#delete_dokter_id").val($(this).data('id_dokter'));
+          $("#delete_name_dokter").text($(this).data('nama'));
       });
     </script>
   </body>
