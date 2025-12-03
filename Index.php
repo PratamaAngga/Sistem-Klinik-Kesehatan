@@ -9,6 +9,7 @@ require_once __DIR__ . "/controller/SpesialisasiController.php";
 require_once __DIR__ . "/controller/RekamMedisController.php";
 require_once __DIR__ . "/controller/DokterController.php";
 require_once __DIR__ . "/controller/FunctionController.php";
+require_once __DIR__ . "/controller/LaporanDokterController.php";
 
 
 $page = $_GET['page'] ?? 'dashboard';
@@ -33,10 +34,19 @@ if ($page === 'kelola-obat') {
     $controller->delete($_POST);
     exit;
 
-} else if($page === 'kelola-pasien') {
-    $controller = new PasienController();
-    $dataPasien = $controller->index();
-    $view = "Views/kelola-pasien.php";
+} elseif ($page === 'kelola-dokter') {
+
+    require_once __DIR__ . "/controller/DokterController.php";
+
+    $controller = new DokterController();
+    $data       = $controller->index();
+
+    // ambil isi array yang dikembalikan controller
+    $dataDokter          = $data['dataDokter'];
+    $dataSpecialization  = $data['dataSpecialization'];
+
+    $view = "Views/kelola-dokter.php";
+
 
 } elseif ($page === 'store-pasien') {
     $controller = new PasienController();
@@ -131,6 +141,18 @@ if ($page === 'kelola-obat') {
     $jadwal  = $data['jadwal'];
 
     $view = "Views/fungsi-jadwal-dokter.php";
+
+} elseif ($page === 'laporan-pendapatan-dokter') {
+
+    $controller = new LaporanDokterController();
+    $dataLaporan = $controller->index();
+    $view = "Views/laporan-pendapatan-dokter.php";
+
+} elseif ($page === 'refresh-laporan-pendapatan-dokter') {
+
+    $controller = new LaporanDokterController();
+    $controller->refresh(); // akan redirect, jadi tidak butuh $view
+    exit;
 
 
 } else {
