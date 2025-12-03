@@ -64,6 +64,12 @@
             <p>Kelola Jadwal Praktek</p>
           </a>
         </li>
+        <li class="nav-item <?= $page == 'janji-temu' ? 'active' : '' ?>">
+          <a href="index.php?page=janji-temu">
+            <i class="fas fa-clipboard-list"></i>
+            <p>Janji Temu</p>
+          </a>
+        </li>
       </ul>
     </div>
   </div>

@@ -11,6 +11,7 @@ require_once __DIR__ . "/controller/DokterController.php";
 require_once __DIR__ . "/controller/JadwalController.php";
 require_once __DIR__ . "/controller/FunctionController.php";
 require_once __DIR__ . "/controller/LaporanDokterController.php";
+require_once __DIR__ . "/controller/JanjiTemuController.php";
 
 
 $page = $_GET['page'] ?? 'dashboard';
@@ -164,32 +165,47 @@ if ($page === 'kelola-obat') {
     $controller->refresh(); // akan redirect, jadi tidak butuh $view
     exit;
 
+} elseif ($page === 'janji-temu') {
+    $controller = new JanjiTemuController();
+    $data = $controller->index();
+    $view = "Views/janji-temu.php";
 
+} elseif ($page === 'store-janji') {
+    $controller = new JanjiTemuController();
+    $controller->store($_POST);
+    exit;
+
+} elseif ($page === 'update-janji') {
+    $controller = new JanjiTemuController();
+    $controller->update($_POST);
+    exit;
+
+} elseif ($page === 'delete-janji') {
+    $controller = new JanjiTemuController();
+    $controller->delete($_POST);
+    exit;
 } else {
     $controller = new FunctionController();
 
-    // Handling jadwal dokter (yang existing)
+    // Tanggal default atau dari POST
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $data = $controller->jadwalDokterByTanggal($_POST);
+        $tanggal = $_POST['tanggal'];
     } else {
-        $today = date("Y-m-d");
-        $data = $controller->jadwalDokterByTanggal(['tanggal' => $today]);
+        $tanggal = date("Y-m-d");
     }
 
-    // Tambahan: load daftar janji view
+    // Ambil jadwal dokter
+    $jadwalData = $controller->jadwalDokterByTanggal(['tanggal' => $tanggal]);
+
+    // Ambil daftar janji
     $janjiData = $controller->getDaftarJanji();
 
-    // Gabungkan variabelnya
-    $merged = array_merge($data, $janjiData);
+    // Extract hasil ke variabel view
+    $tanggal = $jadwalData['tanggal'];
+    $jadwal  = $jadwalData['jadwal'];
+    $daftarJanji = $janjiData['daftarJanji'];
 
-    extract($merged);
-    $data = $controller->jadwalDokterByTanggal($tanggal);
-
-    $tanggal = $data['tanggal'];
-    $jadwal  = $data['jadwal'];
-
-    $view = "Views/fungsi-jadwal-dokter.php";
-
+    $view = "Views/dashboard.php";
 }
 ?>
 
@@ -325,6 +341,7 @@ if ($page === 'kelola-obat') {
         maxTime: "17:00"
       });
     </script>
+    <script src="assets/js/janji-temu.js"></script>
     <script>
       $(document).on('click', '.btn-edit', function () {
 
