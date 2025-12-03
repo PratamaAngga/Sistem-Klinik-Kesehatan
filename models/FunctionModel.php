@@ -33,4 +33,12 @@ class FunctionModel {
 
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getDaftarJanjiView()
+    {
+        $sql = "SELECT * FROM daftar_janji_view";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

@@ -164,17 +164,6 @@ if ($page === 'kelola-obat') {
 
     $view = "Views/fungsi-total-biaya-obat.php";
 
-} elseif ($page === 'fungsi-jadwal-dokter') {
-
-    $tanggal = $_GET['tanggal'] ?? date('Y-m-d');
-    $controller = new FunctionController();
-    $data = $controller->jadwalDokterByTanggal($tanggal);
-
-    $tanggal = $data['tanggal'];
-    $jadwal  = $data['jadwal'];
-
-    $view = "Views/fungsi-jadwal-dokter.php";
-
 } elseif ($page === 'laporan-pendapatan-dokter') {
 
     $controller = new LaporanDokterController();
@@ -188,7 +177,30 @@ if ($page === 'kelola-obat') {
     exit;
 
 } else {
-    $view = "Views/dashboard.php";
+    $controller = new FunctionController();
+
+    // Handling jadwal dokter (yang existing)
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $data = $controller->jadwalDokterByTanggal($_POST);
+    } else {
+        $today = date("Y-m-d");
+        $data = $controller->jadwalDokterByTanggal(['tanggal' => $today]);
+    }
+
+    // Tambahan: load daftar janji view
+    $janjiData = $controller->getDaftarJanji();
+
+    // Gabungkan variabelnya
+    $merged = array_merge($data, $janjiData);
+
+    extract($merged);
+    $data = $controller->jadwalDokterByTanggal($tanggal);
+
+    $tanggal = $data['tanggal'];
+    $jadwal  = $data['jadwal'];
+
+    $view = "Views/fungsi-jadwal-dokter.php";
+
 }
 ?>
 

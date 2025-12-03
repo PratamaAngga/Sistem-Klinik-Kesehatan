@@ -22,13 +22,21 @@ class FunctionController {
     }
 
     // Halaman untuk function table
-    public function jadwalDokterByTanggal($tanggal)
+    public function jadwalDokterByTanggal($request)
     {
+        $tanggal = $request['tanggal'];
         $data = $this->model->getJadwalDokterByTanggal($tanggal);
 
         return [
             'tanggal' => $tanggal,
             'jadwal'  => $data,
         ];
+    }
+
+    public function getDaftarJanji()
+    {
+        $model = new FunctionModel(); // sesuaikan modelmu
+        $data = $model->getDaftarJanjiView(); 
+        return ['daftarJanji' => $data];
     }
 }
