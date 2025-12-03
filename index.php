@@ -3,6 +3,8 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+
+
 require_once __DIR__ . "/controller/ObatController.php";
 require_once __DIR__ . "/controller/PasienController.php";
 require_once __DIR__ . "/controller/SpesialisasiController.php";
@@ -36,8 +38,20 @@ if ($page === 'kelola-obat') {
     $controller->delete($_POST);
     exit;
 
+    // ==========================
+    // KELOLA PASIEN (DITAMBAHKAN)
+    // ==========================
+} elseif ($page === 'kelola-pasien') {
+    $controller = new PasienController();
+    $dataPasien = $controller->index();
+    $view = "Views/kelola-pasien.php";
+
+    // ==========================
+    // KELOLA DOKTER (VERSI UTAMA)
+    // ==========================
 } elseif ($page === 'kelola-dokter') {
 
+    // sebenarnya sudah di-require di atas, tapi biarkan saja
     require_once __DIR__ . "/controller/DokterController.php";
 
     $controller = new DokterController();
@@ -48,7 +62,6 @@ if ($page === 'kelola-obat') {
     $dataSpecialization  = $data['dataSpecialization'];
 
     $view = "Views/kelola-dokter.php";
-
 
 } elseif ($page === 'store-pasien') {
     $controller = new PasienController();
@@ -84,11 +97,10 @@ if ($page === 'kelola-obat') {
     $controller = new SpesialisasiController();
     $controller->delete($_POST);
     exit;
-} elseif ($page === 'kelola-dokter') {
-    $controller = new DokterController();
-    $dataDokter = $controller->index();
-    $view = "Views/kelola-dokter.php";
 
+    // ==========================
+    // CRUD DOKTER LAINNYA
+    // ==========================
 } elseif ($page === 'store-dokter') {
     $controller = new DokterController();
     $controller->store($_POST);
