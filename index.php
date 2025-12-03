@@ -8,6 +8,7 @@ require_once __DIR__ . "/controller/PasienController.php";
 require_once __DIR__ . "/controller/SpesialisasiController.php";
 require_once __DIR__ . "/controller/RekamMedisController.php";
 require_once __DIR__ . "/controller/DokterController.php";
+require_once __DIR__ . "/controller/JadwalController.php";
 require_once __DIR__ . "/controller/FunctionController.php";
 require_once __DIR__ . "/controller/LaporanDokterController.php";
 
@@ -102,7 +103,27 @@ if ($page === 'kelola-obat') {
     $controller->delete($_POST);
     exit;
 
-} elseif ($page === 'rekam-medis') { // << BLOK BARU
+} elseif ($page === 'kelola-jadwal') {
+    $controller = new JadwalController();
+    $dataJadwal = $controller->index();
+    $view = "Views/kelola-jadwal.php";
+
+} elseif ($page === 'store-jadwal') {
+    $controller = new JadwalController();
+    $controller->store($_POST);
+    exit;
+
+} elseif ($page === 'update-jadwal') {
+    $controller = new JadwalController();
+    $controller->update($_POST);
+    exit;
+
+} elseif ($page === 'delete-jadwal') {
+    $controller = new JadwalController();
+    $controller->delete($_POST);
+    exit;
+
+} elseif ($page === 'rekam-medis') {
 
     $pasien_id = $_GET['pasien_id'] ?? null;
 
@@ -200,6 +221,7 @@ if ($page === 'kelola-obat') {
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="assets/css/plugins.min.css" />
     <link rel="stylesheet" href="assets/css/kaiadmin.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   </head>
   <body>
     <div class="wrapper">
@@ -251,12 +273,45 @@ if ($page === 'kelola-obat') {
 
     <!-- Kaiadmin JS -->
     <script src="assets/js/kaiadmin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
       $(document).ready(function() {
         if ($("#basic-datatables").length) {
             $("#basic-datatables").DataTable();
         }
-    });
+      });
+      flatpickr("#jam_mulai", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minTime: "08:00",
+        maxTime: "17:00"
+      });
+      flatpickr("#jam_selesai", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minTime: "08:00",
+        maxTime: "17:00"
+      });
+      flatpickr("#edit_jam_mulai", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minTime: "08:00",
+        maxTime: "17:00"
+      });
+      flatpickr("#edit_jam_selesai", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minTime: "08:00",
+        maxTime: "17:00"
+      });
     </script>
     <script>
       $(document).on('click', '.btn-edit', function () {
@@ -274,9 +329,7 @@ if ($page === 'kelola-obat') {
           $("#delete_obat_nama").text($(this).data('nama'));
 
       });
-    </script>
 
-    <script>
       $(document).on('click', '.btn-edit', function () {
 
           $("#edit_pasien_id").val($(this).data('id'));
@@ -316,6 +369,21 @@ if ($page === 'kelola-obat') {
       $(document).on('click', '.btn-delete-dokter', function () {
           $("#delete_dokter_id").val($(this).data('id_dokter'));
           $("#delete_name_dokter").text($(this).data('nama'));
+      });
+
+      $(document).on('click', '.btn-edit-jadwal', function () {
+          $("#edit_jadwal_id").val($(this).data('id_jadwal'));
+          $("#edit_tanggal_praktek").val($(this).data('tanggal'));
+          $("#edit_dokter").val($(this).data('dokter'));
+          $("#edit_jam_mulai").val($(this).data('jam_mulai'));
+          $("#edit_jam_selesai").val($(this).data('jam_selesai'));
+      });
+
+      $(document).on('click', '.btn-delete-jadwal', function () {
+          $("#delete_jadwal_id").val($(this).data('id_jadwal'));
+          $("#delete_tanggal_praktek").text($(this).data('tanggal'));
+          $("#delete_dokter").text($(this).data('dokter'));
+          $("#delete_jam").text($(this).data('jam_mulai') + " - " + $(this).data('jam_selesai'));
       });
     </script>
   </body>
