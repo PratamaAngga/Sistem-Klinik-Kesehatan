@@ -3,8 +3,6 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-
-
 require_once __DIR__ . "/controller/ObatController.php";
 require_once __DIR__ . "/controller/PasienController.php";
 require_once __DIR__ . "/controller/SpesialisasiController.php";
@@ -14,7 +12,6 @@ require_once __DIR__ . "/controller/JadwalController.php";
 require_once __DIR__ . "/controller/FunctionController.php";
 require_once __DIR__ . "/controller/LaporanDokterController.php";
 require_once __DIR__ . "/controller/JanjiTemuController.php";
-
 
 $page = $_GET['page'] ?? 'dashboard';
 
@@ -39,7 +36,7 @@ if ($page === 'kelola-obat') {
     exit;
 
     // ==========================
-    // KELOLA PASIEN (DITAMBAHKAN)
+    // KELOLA PASIEN
     // ==========================
 } elseif ($page === 'kelola-pasien') {
     $controller = new PasienController();
@@ -47,19 +44,15 @@ if ($page === 'kelola-obat') {
     $view = "Views/kelola-pasien.php";
 
     // ==========================
-    // KELOLA DOKTER (VERSI UTAMA)
+    // KELOLA DOKTER
     // ==========================
 } elseif ($page === 'kelola-dokter') {
 
-    // sebenarnya sudah di-require di atas, tapi biarkan saja
-    require_once __DIR__ . "/controller/DokterController.php";
-
     $controller = new DokterController();
-    $data       = $controller->index();
+    $data = $controller->index();
 
-    // ambil isi array yang dikembalikan controller
-    $dataDokter          = $data['dataDokter'];
-    $dataSpecialization  = $data['dataSpecialization'];
+    $dataDokter         = $data['dataDokter'];
+    $dataSpecialization = $data['dataSpecialization'];
 
     $view = "Views/kelola-dokter.php";
 
@@ -99,7 +92,7 @@ if ($page === 'kelola-obat') {
     exit;
 
     // ==========================
-    // CRUD DOKTER LAINNYA
+    // CRUD DOKTER (STORE/UPDATE/DELETE)
     // ==========================
 } elseif ($page === 'store-dokter') {
     $controller = new DokterController();
@@ -148,7 +141,6 @@ if ($page === 'kelola-obat') {
     $controller = new RekamMedisController();
     $data = $controller->index($pasien_id);
 
-    // variabel yang dipakai di view
     $pasien      = $data['pasien'];
     $rekam_medis = $data['rekam_medis'];
 
@@ -156,71 +148,70 @@ if ($page === 'kelola-obat') {
 
 } elseif ($page === 'fungsi-total-biaya-obat') {
 
-    $rekam_id = $_GET['rekam_id'] ?? 1; // default 1 biar gampang test
+    $rekam_id   = $_GET['rekam_id'] ?? 1;
     $controller = new FunctionController();
-    $data = $controller->totalBiayaObat($rekam_id);
+    $data       = $controller->totalBiayaObat($rekam_id);
 
-    $rekam_id = $data['rekam_id'];
+    $rekam_id         = $data['rekam_id'];
     $total_biaya_obat = $data['total_biaya_obat'];
 
     $view = "Views/fungsi-total-biaya-obat.php";
 
 } elseif ($page === 'laporan-pendapatan-dokter') {
 
-    $controller = new LaporanDokterController();
+    $controller  = new LaporanDokterController();
     $dataLaporan = $controller->index();
-    $view = "Views/laporan-pendapatan-dokter.php";
+    $view        = "Views/laporan-pendapatan-dokter.php";
 
 } elseif ($page === 'refresh-laporan-pendapatan-dokter') {
 
     $controller = new LaporanDokterController();
-    $controller->refresh(); // akan redirect, jadi tidak butuh $view
+    $controller->refresh();
     exit;
 
 } elseif ($page === 'janji-temu') {
+
     $controller = new JanjiTemuController();
-    $data = $controller->index();
-    $view = "Views/janji-temu.php";
+    $data       = $controller->index();
+    $view       = "Views/janji-temu.php";
 
 } elseif ($page === 'store-janji') {
+
     $controller = new JanjiTemuController();
     $controller->store($_POST);
     exit;
 
 } elseif ($page === 'update-janji') {
+
     $controller = new JanjiTemuController();
     $controller->update($_POST);
     exit;
 
 } elseif ($page === 'delete-janji') {
+
     $controller = new JanjiTemuController();
     $controller->delete($_POST);
     exit;
+
 } else {
     $controller = new FunctionController();
 
-    // Tanggal default atau dari POST
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tanggal = $_POST['tanggal'];
     } else {
         $tanggal = date("Y-m-d");
     }
 
-    // Ambil jadwal dokter
     $jadwalData = $controller->jadwalDokterByTanggal(['tanggal' => $tanggal]);
+    $janjiData  = $controller->getDaftarJanji();
 
-    // Ambil daftar janji
-    $janjiData = $controller->getDaftarJanji();
-
-    // Extract hasil ke variabel view
-    $tanggal = $jadwalData['tanggal'];
-    $jadwal  = $jadwalData['jadwal'];
-    $daftarJanji = $janjiData['daftarJanji'];
+    $tanggal    = $jadwalData['tanggal'];
+    $jadwal     = $jadwalData['jadwal'];
+    $daftarJanji= $janjiData['daftarJanji'];
 
     $view = "Views/dashboard.php";
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -271,9 +262,8 @@ if ($page === 'kelola-obat') {
 
       <div class="main-panel">
         <?php include 'Includes/header.php'; ?>
-        
 
-        <div class="container"  id="content-area">
+        <div class="container" id="content-area">
           <?php include $view; ?>
         </div>
 
@@ -281,6 +271,7 @@ if ($page === 'kelola-obat') {
         <?php include 'Includes/footer.php'; ?>
       </div>
     </div>
+
     <!--   Core JS Files   -->
     <script src="assets/js/core/jquery-3.7.1.min.js"></script>
     <script src="assets/js/core/popper.min.js"></script>
@@ -305,127 +296,4 @@ if ($page === 'kelola-obat') {
     <script src="assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
 
     <!-- jQuery Vector Maps -->
-    <script src="assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
-    <script src="assets/js/plugin/jsvectormap/world.js"></script>
-
-    <!-- Sweet Alert -->
-    <script src="assets/js/plugin/sweetalert/sweetalert.min.js"></script>
-
-    <!-- Kaiadmin JS -->
-    <script src="assets/js/kaiadmin.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-      $(document).ready(function() {
-        if ($("#basic-datatables").length) {
-            $("#basic-datatables").DataTable();
-        }
-      });
-      flatpickr("#jam_mulai", {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "H:i",
-        time_24hr: true,
-        minTime: "08:00",
-        maxTime: "17:00"
-      });
-      flatpickr("#jam_selesai", {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "H:i",
-        time_24hr: true,
-        minTime: "08:00",
-        maxTime: "17:00"
-      });
-      flatpickr("#edit_jam_mulai", {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "H:i",
-        time_24hr: true,
-        minTime: "08:00",
-        maxTime: "17:00"
-      });
-      flatpickr("#edit_jam_selesai", {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "H:i",
-        time_24hr: true,
-        minTime: "08:00",
-        maxTime: "17:00"
-      });
-    </script>
-    <script src="assets/js/janji-temu.js"></script>
-    <script>
-      $(document).on('click', '.btn-edit', function () {
-
-          $("#edit_obat_id").val($(this).data('id'));
-          $("#edit_nama").val($(this).data('nama'));
-          $("#edit_jenis").val($(this).data('jenis')).change();
-          $("#edit_stok").val($(this).data('stok'));
-          $("#edit_harga").val($(this).data('harga'));
-
-      });
-      $(document).on('click', '.btn-delete', function () {
-
-          $("#delete_obat_id").val($(this).data('id'));
-          $("#delete_obat_nama").text($(this).data('nama'));
-
-      });
-
-      $(document).on('click', '.btn-edit', function () {
-
-          $("#edit_pasien_id").val($(this).data('id'));
-          $("#edit_nama").val($(this).data('nama'));
-          $("#edit_tanggal_lahir").val($(this).data('tanggal')).change();
-          $("#edit_jenis_kelamin").val($(this).data('kelamin'));
-          $("#edit_no_telp").val($(this).data('telp'));
-          $("#edit_alamat").val($(this).data('alamat'));
-
-      });
-      $(document).on('click', '.btn-delete', function () {
-
-          $("#delete_pasien_id").val($(this).data('id'));
-          $("#delete_pasien_nama").text($(this).data('nama'));
-
-      });
-      $(document).on('click', '.btn-edit-spesialisasi', function () {
-          $("#edit_spesialisasi_id").val($(this).data('id'));
-          $("#edit_nama_spesialisasi").val($(this).data('nama'));
-          $("#edit_kode_spesialis").val($(this).data('kode'));
-          $("#edit_deskripsi").val($(this).data('deskripsi'));
-      });
-
-      $(document).on('click', '.btn-delete-spesialisasi', function () {
-          $("#delete_spesialisasi_id").val($(this).data('id'));
-          $("#delete_spesialisasi_nama").text($(this).data('nama'));
-      });
-
-      $(document).on('click', '.btn-edit-dokter', function () {
-          $("#edit_dokter_id").val($(this).data('id_dokter'));
-          $("#edit_name_dokter").val($(this).data('nama'));
-          $("#edit_no_str_dokter").val($(this).data('no_str'));
-          $("#edit_no_telp_dokter").val($(this).data('no_telp'));
-          $("#edit_spesialisasi_dokter").val($(this).data('spesialisasi'));
-      });
-
-      $(document).on('click', '.btn-delete-dokter', function () {
-          $("#delete_dokter_id").val($(this).data('id_dokter'));
-          $("#delete_name_dokter").text($(this).data('nama'));
-      });
-
-      $(document).on('click', '.btn-edit-jadwal', function () {
-          $("#edit_jadwal_id").val($(this).data('id_jadwal'));
-          $("#edit_tanggal_praktek").val($(this).data('tanggal'));
-          $("#edit_dokter").val($(this).data('dokter'));
-          $("#edit_jam_mulai").val($(this).data('jam_mulai'));
-          $("#edit_jam_selesai").val($(this).data('jam_selesai'));
-      });
-
-      $(document).on('click', '.btn-delete-jadwal', function () {
-          $("#delete_jadwal_id").val($(this).data('id_jadwal'));
-          $("#delete_tanggal_praktek").text($(this).data('tanggal'));
-          $("#delete_dokter").text($(this).data('dokter'));
-          $("#delete_jam").text($(this).data('jam_mulai') + " - " + $(this).data('jam_selesai'));
-      });
-    </script>
-  </body>
-</html>
+    <script src="assets/js/plugin/jsvec
