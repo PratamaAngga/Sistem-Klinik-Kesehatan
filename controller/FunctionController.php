@@ -33,10 +33,11 @@ class FunctionController {
         ];
     }
 
-    public function getDaftarJanji()
+    public function getDaftarJanji($status = "")
     {
-        $model = new FunctionModel(); // sesuaikan modelmu
-        $data = $model->getDaftarJanjiView(); 
+        $model = new FunctionModel();
+        $data = $model->getDaftarJanjiView($status);
+
         return ['daftarJanji' => $data];
     }
 }

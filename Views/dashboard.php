@@ -12,8 +12,12 @@
               <div class="col-md-12">
                 <div class="card card-round">
                   <div class="card-header">
-                    <div class="card-head-row">
+                    <div class="card-head-row d-flex justify-content-between">
                       <div class="card-title">Jadwal Dokter dan Janjinya</div>
+                      <a href="index.php?page=laporan-jadwal&tanggal=<?= $tanggal ?>"
+                        class="btn btn-primary" target="_blank">
+                        Cetak
+                      </a>
                     </div>
                   </div>
                   <div class="card-body">
@@ -69,11 +73,32 @@
               <div class="col-md-12">
                 <div class="card card-round">
                   <div class="card-header">
-                    <div class="card-head-row">
+                    <div class="card-head-row d-flex justify-content-between">
                       <div class="card-title">Daftar Janji Temu</div>
+                      <a href="index.php?page=laporan-janji&status=<?= $status ?>"
+                        class="btn btn-primary" target="_blank">
+                        Cetak
+                      </a>
                     </div>
                   </div>
                   <div class="card-body">
+                    <form method="POST" action="index.php?page=dashboard" class="row g-3 mb-4">
+                      <div class="col-auto">
+                        <label class="col-form-label">Status Janji</label>
+                      </div>
+
+                      <div class="col-auto">
+                        <select name="status" class="form-control">
+                          <option value="" <?= ($filterStatus == '' ? 'selected' : '') ?>>Semua</option>
+                          <option value="Menunggu" <?= ($filterStatus == 'Menunggu' ? 'selected' : '') ?>>Menunggu</option>
+                          <option value="Selesai"  <?= ($filterStatus == 'Selesai' ? 'selected' : '') ?>>Selesai</option>
+                        </select>
+                      </div>
+
+                      <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">Tampilkan</button>
+                      </div>
+                    </form>
                     <div class="table-responsive">
                       <table class="display table table-striped table-hover">
                         <thead>

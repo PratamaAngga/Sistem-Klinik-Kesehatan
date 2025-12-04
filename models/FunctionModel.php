@@ -34,11 +34,21 @@ class FunctionModel {
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getDaftarJanjiView()
+    public function getDaftarJanjiView($status = "")
     {
-        $sql = "SELECT * FROM daftar_janji_view";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+        if ($status === "" || $status === null) {
+            // tanpa filter
+            $sql = "SELECT * FROM daftar_janji_view ORDER BY tanggal_janji DESC";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+        } else {
+            // dengan filter
+            $sql = "SELECT * FROM daftar_janji_view WHERE status = :status ORDER BY tanggal_janji DESC";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':status', $status);
+            $stmt->execute();
+        }
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -18,6 +18,7 @@ require_once __DIR__ . "/controller/JadwalController.php";
 require_once __DIR__ . "/controller/FunctionController.php";
 require_once __DIR__ . "/controller/LaporanDokterController.php";
 require_once __DIR__ . "/controller/JanjiTemuController.php";
+require_once __DIR__ . "/controller/LaporanController.php";
 
 $page = $_GET['page'] ?? 'dashboard';
 
@@ -194,21 +195,33 @@ if ($page === 'kelola-obat') {
     $controller = new JanjiTemuController();
     $controller->akhiri($_POST);
     exit;
+} elseif ($page === 'laporan-jadwal') {
+    $controller = new LaporanController();
+    $controller->jadwalPdf();
+    exit;
+
+} elseif ($page === 'laporan-janji') {
+    $controller = new LaporanController();
+    $controller->janjiPdf();
+    exit;
 } else {
     $controller = new FunctionController();
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $tanggal = $_POST['tanggal'];
-    } else {
-        $tanggal = date("Y-m-d");
-    }
+    // --- FILTER TABEL 1 ---
+    $tanggal = $_POST['tanggal'] ?? date("Y-m-d");
 
+    // --- FILTER TABEL 2 ---
+    $status = $_POST['status'] ?? "";
+
+    // --- AMBIL DATA ---
     $jadwalData = $controller->jadwalDokterByTanggal(['tanggal' => $tanggal]);
-    $janjiData  = $controller->getDaftarJanji();
+    $janjiData  = $controller->getDaftarJanji($status);
 
-    $tanggal    = $jadwalData['tanggal'];
-    $jadwal     = $jadwalData['jadwal'];
-    $daftarJanji= $janjiData['daftarJanji'];
+    // --- DATA UNTUK VIEW ---
+    $tanggal      = $jadwalData['tanggal'];
+    $jadwal       = $jadwalData['jadwal'];
+    $daftarJanji  = $janjiData['daftarJanji'];
+    $filterStatus = $status; // penting untuk dropdown
 
     $view = "Views/dashboard.php";
 }
