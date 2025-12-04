@@ -19,7 +19,6 @@ require_once __DIR__ . "/controller/FunctionController.php";
 require_once __DIR__ . "/controller/LaporanDokterController.php";
 require_once __DIR__ . "/controller/JanjiTemuController.php";
 
-
 $page = $_GET['page'] ?? 'dashboard';
 
 if ($page === 'kelola-obat') {
@@ -43,7 +42,7 @@ if ($page === 'kelola-obat') {
     exit;
 
     // ==========================
-    // KELOLA PASIEN (DITAMBAHKAN)
+    // KELOLA PASIEN
     // ==========================
 } elseif ($page === 'kelola-pasien') {
     $controller = new PasienController();
@@ -51,7 +50,7 @@ if ($page === 'kelola-obat') {
     $view = "Views/kelola-pasien.php";
 
     // ==========================
-    // KELOLA DOKTER (VERSI UTAMA)
+    // KELOLA DOKTER
     // ==========================
 } elseif ($page === 'store-pasien') {
     $controller = new PasienController();
@@ -139,7 +138,6 @@ if ($page === 'kelola-obat') {
     $controller = new RekamMedisController();
     $data = $controller->index($pasien_id);
 
-    // variabel yang dipakai di view
     $pasien      = $data['pasien'];
     $rekam_medis = $data['rekam_medis'];
 
@@ -147,43 +145,47 @@ if ($page === 'kelola-obat') {
 
 } elseif ($page === 'fungsi-total-biaya-obat') {
 
-    $rekam_id = $_GET['rekam_id'] ?? 1; // default 1 biar gampang test
+    $rekam_id   = $_GET['rekam_id'] ?? 1;
     $controller = new FunctionController();
-    $data = $controller->totalBiayaObat($rekam_id);
+    $data       = $controller->totalBiayaObat($rekam_id);
 
-    $rekam_id = $data['rekam_id'];
+    $rekam_id         = $data['rekam_id'];
     $total_biaya_obat = $data['total_biaya_obat'];
 
     $view = "Views/fungsi-total-biaya-obat.php";
 
 } elseif ($page === 'laporan-pendapatan-dokter') {
 
-    $controller = new LaporanDokterController();
+    $controller  = new LaporanDokterController();
     $dataLaporan = $controller->index();
-    $view = "Views/laporan-pendapatan-dokter.php";
+    $view        = "Views/laporan-pendapatan-dokter.php";
 
 } elseif ($page === 'refresh-laporan-pendapatan-dokter') {
 
     $controller = new LaporanDokterController();
-    $controller->refresh(); // akan redirect, jadi tidak butuh $view
+    $controller->refresh();
     exit;
 
 } elseif ($page === 'janji-temu') {
+
     $controller = new JanjiTemuController();
-    $data = $controller->index();
-    $view = "Views/janji-temu.php";
+    $data       = $controller->index();
+    $view       = "Views/janji-temu.php";
 
 } elseif ($page === 'store-janji') {
+
     $controller = new JanjiTemuController();
     $controller->store($_POST);
     exit;
 
 } elseif ($page === 'update-janji') {
+
     $controller = new JanjiTemuController();
     $controller->update($_POST);
     exit;
 
 } elseif ($page === 'delete-janji') {
+
     $controller = new JanjiTemuController();
     $controller->delete($_POST);
     exit;
@@ -195,28 +197,22 @@ if ($page === 'kelola-obat') {
 } else {
     $controller = new FunctionController();
 
-    // Tanggal default atau dari POST
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tanggal = $_POST['tanggal'];
     } else {
         $tanggal = date("Y-m-d");
     }
 
-    // Ambil jadwal dokter
     $jadwalData = $controller->jadwalDokterByTanggal(['tanggal' => $tanggal]);
+    $janjiData  = $controller->getDaftarJanji();
 
-    // Ambil daftar janji
-    $janjiData = $controller->getDaftarJanji();
-
-    // Extract hasil ke variabel view
-    $tanggal = $jadwalData['tanggal'];
-    $jadwal  = $jadwalData['jadwal'];
-    $daftarJanji = $janjiData['daftarJanji'];
+    $tanggal    = $jadwalData['tanggal'];
+    $jadwal     = $jadwalData['jadwal'];
+    $daftarJanji= $janjiData['daftarJanji'];
 
     $view = "Views/dashboard.php";
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -267,9 +263,8 @@ if ($page === 'kelola-obat') {
 
       <div class="main-panel">
         <?php include 'Includes/header.php'; ?>
-        
 
-        <div class="container"  id="content-area">
+        <div class="container" id="content-area">
           <?php include $view; ?>
         </div>
 
@@ -277,6 +272,7 @@ if ($page === 'kelola-obat') {
         <?php include 'Includes/footer.php'; ?>
       </div>
     </div>
+
     <!--   Core JS Files   -->
     <script src="assets/js/core/jquery-3.7.1.min.js"></script>
     <script src="assets/js/core/popper.min.js"></script>

@@ -1,3 +1,6 @@
+<?php
+// Views/kelola-dokter.php
+?>
 <div class="page-inner">
             <div class="row">
               <div class="col-md-12">
@@ -10,70 +13,82 @@
                               data-bs-target="#addRowModal">
                         <i class="fa fa-plus"></i> Tambah Dokter
                       </button>
-                    </div>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table
-                        id="basic-datatables"
-                        class="display table table-striped table-hover"
-                      >
-                        <thead>
-                          <tr>
-                            <th>No</th>
-                            <th>Nama Dokter</th>
-                            <th>No STR</th>
-                            <th>No Telp</th>
-                            <th>Spesialisasi</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tfoot>
-                          <tr>
-                            <th>No</th>
-                            <th>Nama Dokter</th>
-                            <th>No STR</th>
-                            <th>No Telp</th>
-                            <th>Spesialisasi</th>
-                            <th>Action</th>
-                          </tr>
-                        </tfoot>
-                        <tbody>
-                        <?php $no = 1; foreach ($dataDokter['dataDokter'] as $dokter): ?>
-                            <tr>
-                                <td><?= $no++; ?></td>
-                                <td><?= $dokter['nama']; ?></td>
-                                <td><?= $dokter['no_str']; ?></td>
-                                <td><?= $dokter['no_telp']; ?></td>
-                                <td><?= $dokter['nama_spesialisasi']; ?></td>
-                                <td class="d-flex justify-content-around">
-                                    <button 
-                                        class="btn btn-warning btn-edit btn-edit-dokter"
-                                        data-id_dokter="<?= $dokter['dokter_id']; ?>"
-                                        data-nama="<?= $dokter['nama']; ?>"
-                                        data-no_str="<?= $dokter['no_str']; ?>"
-                                        data-no_telp="<?= $dokter['no_telp']; ?>"
-                                        data-spesialisasi="<?= $dokter['spesialisasi_id']; ?>"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#editDokterModal"
-                                    >
-                                        <i class="fas fa-pen"></i>
-                                    </button>
+                    </button>
+                </div>
 
-                                    <button 
-                                        class="btn btn-danger btn-delete btn-delete-dokter"
-                                        data-id_dokter="<?= $dokter['dokter_id']; ?>"
-                                        data-nama="<?= $dokter['nama']; ?>"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#deleteDokterModal"
-                                    >
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                        </tbody>
-                      </table>
+                <!-- TABLE DOKTER -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table
+                            id="basic-datatables"
+                            class="display table table-striped table-hover"
+                        >
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Dokter</th>
+                                    <th>Spesialisasi</th>
+                                    <th>Nomor STR</th>
+                                    <th>Nomor Telepon</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <?php if (!empty($dataDokter)): ?>
+                                    <?php $no = 1; foreach ($dataDokter as $dokter): ?>
+
+                                        <?php
+                                            $namaDokter     = $dokter['nama'] ?? '';
+                                            $namaSpesialis  = $dokter['nama_spesialisasi'] ?? '';
+                                            $noStr          = $dokter['no_str'] ?? '';
+                                            $noTelp         = $dokter['no_telp'] ?? '';
+                                            $dokterId       = $dokter['dokter_id'] ?? '';
+                                            $spesialisasiId = $dokter['spesialisasi_id'] ?? '';
+                                        ?>
+
+                                        <tr>
+                                            <td><?= $no++; ?></td>
+                                            <td><?= htmlspecialchars($namaDokter); ?></td>
+                                            <td><?= htmlspecialchars($namaSpesialis); ?></td>
+                                            <td><?= htmlspecialchars($noStr); ?></td>
+                                            <td><?= htmlspecialchars($noTelp); ?></td>
+                                            <td>
+                                                <!-- EDIT BUTTON -->
+                                                <button 
+                                                    class="btn btn-warning btn-edit-dokter"
+                                                    data-id_dokter="<?= $dokterId; ?>"
+                                                    data-nama="<?= htmlspecialchars($namaDokter); ?>"
+                                                    data-spesialisasi="<?= $spesialisasiId; ?>"
+                                                    data-no_str="<?= htmlspecialchars($noStr); ?>"
+                                                    data-no_telp="<?= htmlspecialchars($noTelp); ?>"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editDokterModal">
+                                                    <i class="fas fa-pen"></i>
+                                                </button>
+
+                                                <!-- DELETE BUTTON -->
+                                                <button 
+                                                    class="btn btn-danger btn-delete-dokter"
+                                                    data-id_dokter="<?= $dokterId; ?>"
+                                                    data-nama="<?= htmlspecialchars($namaDokter); ?>"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteDokterModal">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="6" class="text-center">
+                                            Belum ada data dokter.
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
                       <!-- MODAL TAMBAH DOKTER -->
                       <div class="modal fade" id="addRowModal" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -222,3 +237,13 @@
               </div>
             </div>
           </div>
+            <!-- TOMBOL LAPORAN -->
+            <div class="mt-3 d-flex justify-content-end">
+                <a href="index.php?page=laporan-pendapatan-dokter" class="btn btn-outline-primary">
+                    <i class="fas fa-chart-bar"></i> Lihat Laporan Pendapatan Dokter
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
