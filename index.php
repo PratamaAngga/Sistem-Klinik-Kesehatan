@@ -6,9 +6,6 @@ ini_set('display_errors', 1);
 // $_SESSION['error'] = null;
 // unset($_SESSION['success']);
 // unset($_SESSION['error']);
-
-
-
 require_once __DIR__ . "/controller/ObatController.php";
 require_once __DIR__ . "/controller/PasienController.php";
 require_once __DIR__ . "/controller/SpesialisasiController.php";
@@ -42,17 +39,11 @@ if ($page === 'kelola-obat') {
     $controller->delete($_POST);
     exit;
 
-    // ==========================
-    // KELOLA PASIEN
-    // ==========================
 } elseif ($page === 'kelola-pasien') {
     $controller = new PasienController();
     $dataPasien = $controller->index();
     $view = "Views/kelola-pasien.php";
 
-    // ==========================
-    // KELOLA DOKTER
-    // ==========================
 } elseif ($page === 'store-pasien') {
     $controller = new PasienController();
     $controller->store($_POST);
@@ -87,6 +78,7 @@ if ($page === 'kelola-obat') {
     $controller = new SpesialisasiController();
     $controller->delete($_POST);
     exit;
+
 } elseif ($page === 'kelola-dokter') {
     $controller = new DokterController();
     $dataDokter = $controller->index();
@@ -128,65 +120,43 @@ if ($page === 'kelola-obat') {
     exit;
 
 } elseif ($page === 'rekam-medis') {
-
     $pasien_id = $_GET['pasien_id'] ?? null;
-
     if (!$pasien_id) {
         header("Location: index.php?page=kelola-pasien");
         exit;
     }
-
     $controller = new RekamMedisController();
     $data = $controller->index($pasien_id);
-
     $pasien      = $data['pasien'];
     $rekam_medis = $data['rekam_medis'];
-
     $view = "Views/rekam-medis.php";
 
-} elseif ($page === 'fungsi-total-biaya-obat') {
-
-    $rekam_id   = $_GET['rekam_id'] ?? 1;
-    $controller = new FunctionController();
-    $data       = $controller->totalBiayaObat($rekam_id);
-
-    $rekam_id         = $data['rekam_id'];
-    $total_biaya_obat = $data['total_biaya_obat'];
-
-    $view = "Views/fungsi-total-biaya-obat.php";
-
 } elseif ($page === 'laporan-pendapatan-dokter') {
-
     $controller  = new LaporanDokterController();
     $dataLaporan = $controller->index();
     $view        = "Views/laporan-pendapatan-dokter.php";
 
 } elseif ($page === 'refresh-laporan-pendapatan-dokter') {
-
     $controller = new LaporanDokterController();
     $controller->refresh();
     exit;
 
 } elseif ($page === 'janji-temu') {
-
     $controller = new JanjiTemuController();
     $data       = $controller->index();
     $view       = "Views/janji-temu.php";
 
 } elseif ($page === 'store-janji') {
-
     $controller = new JanjiTemuController();
     $controller->store($_POST);
     exit;
 
 } elseif ($page === 'update-janji') {
-
     $controller = new JanjiTemuController();
     $controller->update($_POST);
     exit;
 
 } elseif ($page === 'delete-janji') {
-
     $controller = new JanjiTemuController();
     $controller->delete($_POST);
     exit;
@@ -195,6 +165,7 @@ if ($page === 'kelola-obat') {
     $controller = new JanjiTemuController();
     $controller->akhiri($_POST);
     exit;
+
 } elseif ($page === 'laporan-jadwal') {
     $controller = new LaporanController();
     $controller->jadwalPdf();
@@ -204,31 +175,20 @@ if ($page === 'kelola-obat') {
     $controller = new LaporanController();
     $controller->janjiPdf();
     exit;
+
 } else {
     $controller = new FunctionController();
-
-    // --- FILTER TABEL 1 (Jadwal Dokter) ---
     $tanggal = $_POST['tanggal'] ?? date("Y-m-d");
     $modalShow = false;
     $tanggalAntrianPerDokter = $_POST['tanggal-antrian-per-dokter'] ?? date("Y-m-d");
     if (isset($_POST['tanggal-antrian-per-dokter'])) {
         $modalShow = true;
     }
-
-    // --- FILTER TABEL 2 (Daftar Janji) ---
     $status = $_POST['status'] ?? "";
-
-    // --- AMBIL DATA UTAMA ---
     $jadwalData = $controller->jadwalDokterByTanggal(['tanggal' => $tanggal]);
     $janjiData  = $controller->getDaftarJanji($status);
-
-    // --- AMBIL DATA TAMBAHAN UNTUK MODAL ANTRIAN ---
     $antrianData = $controller->getAntrianDokterWithExplain($tanggalAntrianPerDokter);
-
-    // --- AMBIL DATA REMINDER JANJI HARI INI ---
     $reminderData = $controller->reminderJanjiHariIni();
-
-    // --- DATA UNTUK VIEW ---
     $tanggal           = $jadwalData['tanggal'];
     $jadwal            = $jadwalData['jadwal'];
     $daftarJanji       = $janjiData['daftarJanji'];
@@ -236,7 +196,6 @@ if ($page === 'kelola-obat') {
     $antrian           = $antrianData['antrian'];     // modal antrian dokter
     $explain_antrian   = $antrianData['explain_antrian'];
     $reminder          = $reminderData['reminder'];   // data reminder janji hari ini
-
     $view = "Views/dashboard.php";
 }
 ?>
@@ -255,8 +214,6 @@ if ($page === 'kelola-obat') {
       href="assets/img/kaiadmin/favicon.ico"
       type="image/x-icon"
     />
-
-    <!-- Fonts and icons -->
     <script src="assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
       WebFont.load({
@@ -276,7 +233,6 @@ if ($page === 'kelola-obat') {
       });
     </script>
 
-    <!-- CSS Files -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="assets/css/plugins.min.css" />
     <link rel="stylesheet" href="assets/css/kaiadmin.css" />
@@ -284,18 +240,12 @@ if ($page === 'kelola-obat') {
   </head>
   <body>
     <div class="wrapper">
-      <!-- Sidebar -->
       <?php include 'Includes/sidebar.php'; ?>
-      <!-- End Sidebar -->
-
       <div class="main-panel">
         <?php include 'Includes/header.php'; ?>
-
         <div class="container" id="content-area">
           <?php include $view; ?>
         </div>
-
-        <!-- Footer -->
         <?php include 'Includes/footer.php'; ?>
       </div>
     </div>
@@ -304,32 +254,23 @@ if ($page === 'kelola-obat') {
     <script src="assets/js/core/jquery-3.7.1.min.js"></script>
     <script src="assets/js/core/popper.min.js"></script>
     <script src="assets/js/core/bootstrap.min.js"></script>
-
     <!-- jQuery Scrollbar -->
     <script src="assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-
     <!-- Chart JS -->
     <script src="assets/js/plugin/chart.js/chart.min.js"></script>
-
     <!-- jQuery Sparkline -->
     <script src="assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
-
     <!-- Chart Circle -->
     <script src="assets/js/plugin/chart-circle/circles.min.js"></script>
-
     <!-- Datatables -->
     <script src="assets/js/plugin/datatables/datatables.min.js"></script>
-
     <!-- Bootstrap Notify -->
     <script src="assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-
     <!-- jQuery Vector Maps -->
     <script src="assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
     <script src="assets/js/plugin/jsvectormap/world.js"></script>
-
     <!-- Sweet Alert -->
     <script src="assets/js/plugin/sweetalert/sweetalert.min.js"></script>
-
     <!-- Kaiadmin JS -->
     <script src="assets/js/kaiadmin.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -397,7 +338,6 @@ if ($page === 'kelola-obat') {
     <?php endif; ?>
     <script>
       $(document).on('click', '.btn-edit', function () {
-
           $("#edit_obat_id").val($(this).data('id'));
           $("#edit_nama").val($(this).data('nama'));
           $("#edit_jenis").val($(this).data('jenis')).change();
@@ -406,14 +346,11 @@ if ($page === 'kelola-obat') {
 
       });
       $(document).on('click', '.btn-delete', function () {
-
           $("#delete_obat_id").val($(this).data('id'));
           $("#delete_obat_nama").text($(this).data('nama'));
 
       });
-
       $(document).on('click', '.btn-edit', function () {
-
           $("#edit_pasien_id").val($(this).data('id'));
           $("#edit_nama").val($(this).data('nama'));
           $("#edit_tanggal_lahir").val($(this).data('tanggal')).change();
@@ -423,7 +360,6 @@ if ($page === 'kelola-obat') {
 
       });
       $(document).on('click', '.btn-delete', function () {
-
           $("#delete_pasien_id").val($(this).data('id'));
           $("#delete_pasien_nama").text($(this).data('nama'));
 
