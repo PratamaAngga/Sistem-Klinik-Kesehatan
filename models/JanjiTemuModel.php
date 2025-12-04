@@ -50,40 +50,100 @@ class JanjiTemuModel
 
     public function create($data)
     {
-         $stmt = $this->db->prepare("
-            INSERT INTO janji_temu (pasien_id, dokter_id, jadwal_id, tanggal_janji, jam_janji)
-            VALUES (:pasien_id, :dokter_id, :jadwal_id, :tanggal_janji, :jam_janji)
-        ");
+        try {
+            $stmt = $this->db->prepare("
+               INSERT INTO janji_temu (pasien_id, dokter_id, jadwal_id, tanggal_janji, jam_janji)
+               VALUES (:pasien_id, :dokter_id, :jadwal_id, :tanggal_janji, :jam_janji)
+           ");
+   
+           return $stmt->execute([
+               ':pasien_id'     => $data['pasien_id'],
+               ':dokter_id'     => $data['dokter_id'],
+               ':jadwal_id'     => $data['jadwal_id'],
+               ':tanggal_janji' => $data['tanggal'],
+               ':jam_janji'     => $data['jam'],
+           ]);
+        } catch (PDOException $e) {
+            $fullMsg = $e->getMessage();
 
-        return $stmt->execute([
-            ':pasien_id'     => $data['pasien_id'],
-            ':dokter_id'     => $data['dokter_id'],
-            ':jadwal_id'     => $data['jadwal_id'],
-            ':tanggal_janji' => $data['tanggal'],
-            ':jam_janji'     => $data['jam'],
-        ]);
+            // Ambil yang setelah "ERROR:"
+            $posErr = strpos($fullMsg, "ERROR:");
+            if ($posErr !== false) {
+                $cleanMsg = trim(substr($fullMsg, $posErr + 6));
+            } else {
+                $cleanMsg = $fullMsg;
+            }
+
+            // Hapus bagian mulai "CONTEXT:"
+            $posContext = strpos($cleanMsg, "CONTEXT:");
+            if ($posContext !== false) {
+                $cleanMsg = trim(substr($cleanMsg, 0, $posContext));
+            }
+
+            return $cleanMsg;
+        }
     }
 
     public function update($data)
     {
-        $sql = "UPDATE janji_temu
-                SET tanggal_janji = :tanggal_janji,
-                    jam_janji = :jam_janji
-                WHERE janji_id = :janji_id";
+        try {
+            $sql = "UPDATE janji_temu
+                    SET tanggal_janji = :tanggal_janji,
+                        jam_janji = :jam_janji
+                    WHERE janji_id = :janji_id";
+    
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([
+                ':tanggal_janji' => $data['tanggal_janji'],
+                ':jam_janji'     => $data['jam_janji'],
+                ':janji_id'      => $data['janji_id']
+            ]);
+        } catch (PDOException $e) {
+            $fullMsg = $e->getMessage();
 
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
-            ':tanggal_janji' => $data['tanggal_janji'],
-            ':jam_janji'     => $data['jam_janji'],
-            ':janji_id'      => $data['janji_id']
-        ]);
+            // Ambil yang setelah "ERROR:"
+            $posErr = strpos($fullMsg, "ERROR:");
+            if ($posErr !== false) {
+                $cleanMsg = trim(substr($fullMsg, $posErr + 6));
+            } else {
+                $cleanMsg = $fullMsg;
+            }
+
+            // Hapus bagian mulai "CONTEXT:"
+            $posContext = strpos($cleanMsg, "CONTEXT:");
+            if ($posContext !== false) {
+                $cleanMsg = trim(substr($cleanMsg, 0, $posContext));
+            }
+
+            return $cleanMsg;
+        }
     }
 
     public function delete($janji_id)
     {
-        $sql = "DELETE FROM janji_temu WHERE janji_id = :jid";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([':jid' => $janji_id]);
+        try {
+            $sql = "DELETE FROM janji_temu WHERE janji_id = :jid";
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([':jid' => $janji_id]);
+        } catch (PDOException $e) {
+            $fullMsg = $e->getMessage();
+
+            // Ambil yang setelah "ERROR:"
+            $posErr = strpos($fullMsg, "ERROR:");
+            if ($posErr !== false) {
+                $cleanMsg = trim(substr($fullMsg, $posErr + 6));
+            } else {
+                $cleanMsg = $fullMsg;
+            }
+
+            // Hapus bagian mulai "CONTEXT:"
+            $posContext = strpos($cleanMsg, "CONTEXT:");
+            if ($posContext !== false) {
+                $cleanMsg = trim(substr($cleanMsg, 0, $posContext));
+            }
+
+            return $cleanMsg;
+        }
     }
 
     // Helper: convert PHP array to Postgres array literal, e.g. [1,2] -> '{1,2}'

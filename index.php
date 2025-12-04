@@ -1,7 +1,11 @@
 <?php
-
+session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+// $_SESSION['success'] = null;
+// $_SESSION['error'] = null;
+// unset($_SESSION['success']);
+// unset($_SESSION['error']);
 
 
 
@@ -49,20 +53,6 @@ if ($page === 'kelola-obat') {
     // ==========================
     // KELOLA DOKTER (VERSI UTAMA)
     // ==========================
-} elseif ($page === 'kelola-dokter') {
-
-    // sebenarnya sudah di-require di atas, tapi biarkan saja
-    require_once __DIR__ . "/controller/DokterController.php";
-
-    $controller = new DokterController();
-    $data       = $controller->index();
-
-    // ambil isi array yang dikembalikan controller
-    $dataDokter          = $data['dataDokter'];
-    $dataSpecialization  = $data['dataSpecialization'];
-
-    $view = "Views/kelola-dokter.php";
-
 } elseif ($page === 'store-pasien') {
     $controller = new PasienController();
     $controller->store($_POST);
@@ -97,10 +87,11 @@ if ($page === 'kelola-obat') {
     $controller = new SpesialisasiController();
     $controller->delete($_POST);
     exit;
+} elseif ($page === 'kelola-dokter') {
+    $controller = new DokterController();
+    $dataDokter = $controller->index();
+    $view = "Views/kelola-dokter.php";
 
-    // ==========================
-    // CRUD DOKTER LAINNYA
-    // ==========================
 } elseif ($page === 'store-dokter') {
     $controller = new DokterController();
     $controller->store($_POST);
@@ -195,6 +186,11 @@ if ($page === 'kelola-obat') {
 } elseif ($page === 'delete-janji') {
     $controller = new JanjiTemuController();
     $controller->delete($_POST);
+    exit;
+
+} elseif ($page === 'akhiri-janji') {
+    $controller = new JanjiTemuController();
+    $controller->akhiri($_POST);
     exit;
 } else {
     $controller = new FunctionController();
@@ -345,6 +341,22 @@ if ($page === 'kelola-obat') {
         maxTime: "17:00"
       });
       flatpickr("#edit_jam_selesai", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minTime: "08:00",
+        maxTime: "17:00"
+      });
+      flatpickr("#tambah_jam_janji", {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        time_24hr: true,
+        minTime: "08:00",
+        maxTime: "17:00"
+      });
+      flatpickr("#edit_jam_janji", {
         enableTime: true,
         noCalendar: true,
         dateFormat: "H:i",

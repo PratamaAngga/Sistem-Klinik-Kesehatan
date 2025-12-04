@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const id = $(this).data('id');
     $('#edit_janji_id').val(id);
     $('#edit_tanggal').val($(this).data('tanggal'));
-    $('#edit_jam').val($(this).data('jam'));
+    $('#edit_jam_janji').val($(this).data('jam'));
   });
 
   // Bind delete modal
@@ -32,60 +32,61 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Add / remove obat rows
-  function addObatRow() {
-    // clone template from the first default structure (build via JS)
-    const row = `
-      <div class="obat-row row g-2 align-items-end mb-2">
-        <div class="col-md-4">
-          <label>Obat</label>
-          <select name="obat_id[]" class="form-select obat-select" required>
-            <option value="">Pilih Obat</option>
-            <?php foreach($data['obatList'] as $ob): ?>
-              <option value="<?= $ob['obat_id'] ?>" data-harga="<?= $ob['harga_satuan'] ?>" data-stok="<?= $ob['stok'] ?>">
-                <?= addslashes($ob['nama_obat']) ?> (<?= addslashes($ob['jenis_obat']) ?>)
-              </option>
-            <?php endforeach; ?>
-          </select>
-        </div>
-        <div class="col-md-2">
-          <label>Jumlah</label>
-          <input type="number" name="jumlah[]" min="1" value="1" class="form-control jumlah-input" required>
-        </div>
-        <div class="col-md-2">
-          <label>Dosis</label>
-          <input type="text" name="dosis[]" class="form-control" placeholder="mis: 3x1" required>
-        </div>
-        <div class="col-md-3">
-          <label>Total Biaya</label>
-          <input type="text" name="total_biaya[]" class="form-control total-bayar-input" placeholder="0" required>
-        </div>
-        <div class="col-md-1 text-end">
-          <button type="button" class="btn btn-outline-danger btn-sm btn-hapus-row" title="Hapus baris">×</button>
-        </div>
-      </div>
-    `;
-    $('#containerObatRows').append(row);
-  }
+  const addBtn = document.getElementById('addObat');
+    const container = document.getElementById('spec-container');
 
-  // initial row when page loads
-  if ($('#containerObatRows .obat-row').length === 0) {
-    addObatRow();
-  }
+    // Template untuk clone (ROW PERTAMA DI MODAL)
+    const template = container.querySelector('.spec-item');
 
-  // click handler tambah
-  $('#tambahBarisObat').on('click', function() { addObatRow(); });
+    // Tambah baris obat
+    addBtn.addEventListener('click', function () {
+        let newField = template.cloneNode(true);
 
-  // delegate hapus row
-  $(document).on('click', '.btn-hapus-row', function() {
-    // jika tinggal 1 row, jangan dihapus (atau bisa pilih untuk allow)
-    if ($('#containerObatRows .obat-row').length > 1) {
-      $(this).closest('.obat-row').remove();
-    } else {
-      // kosongkan isian jika cuma 1 row
-      $(this).closest('.obat-row').find('select').val('');
-      $(this).closest('.obat-row').find('input').val('');
-    }
-  });
+        // reset semua field dalam clone
+        newField.querySelector('.obat-select').value = "";
+        newField.querySelector('.jumlah-input').value = 1;
+        newField.querySelector('.total-bayar-input').value = "";
+        newField.querySelector('input[name="dosis[]"]').value = "";
+
+        // tampilkan tombol remove
+        newField.querySelector('.btn-remove-spec').style.display = "block";
+
+        container.appendChild(newField);
+    });
+
+    // Remove baris obat
+    container.addEventListener('click', function (e) {
+        if (e.target.classList.contains('btn-remove-spec')) {
+            // kalau cuma 1 row, jangan hapus, cukup reset
+            if (container.querySelectorAll('.spec-item').length === 1) {
+                template.querySelector('.obat-select').value = "";
+                template.querySelector('.jumlah-input').value = 1;
+                template.querySelector('.total-bayar-input').value = "";
+                template.querySelector('input[name="dosis[]"]').value = "";
+                return;
+            }
+
+            e.target.closest('.spec-item').remove();
+        }
+    });
+
+    // Auto hitung total biaya
+    container.addEventListener('input', function (e) {
+        if (e.target.classList.contains('obat-select') ||
+            e.target.classList.contains('jumlah-input')) {
+
+            const row = e.target.closest('.spec-item');
+            const selected = row.querySelector('.obat-select option:checked');
+
+            const harga = parseFloat(selected.dataset.harga || 0);
+            const jumlah = parseInt(row.querySelector('.jumlah-input').value || 0);
+
+            const total = harga * jumlah;
+
+            row.querySelector('.total-bayar-input').value =
+                total > 0 ? total : "";
+        }
+    });
 
   // auto-fill total_biaya berdasarkan obat selected * jumlah (opsional)
   $(document).on('change', '.obat-select, .jumlah-input', function() {

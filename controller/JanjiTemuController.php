@@ -11,6 +11,7 @@ class JanjiTemuController
     private $pasienModel;
     private $dokterModel;
     private $jadwalModel;
+    private $obatModel;
 
     public function __construct()
     {
@@ -18,13 +19,13 @@ class JanjiTemuController
         $this->pasienModel = new PasienModel();
         $this->dokterModel = new DokterModel();
         $this->jadwalModel = new JadwalModel();
+        $this->obatModel = new ObatModel();
     }
 
     public function index()
     {
         $data['janji'] = $this->model->getAll();
-        $obatModel = new ObatModel();
-        $data['obatList'] = $obatModel->getAllObat();
+        $data['obatList'] = $this->obatModel->getAllObat();
         $data['pasien']  = $this->pasienModel->getAllPasien();
         $data['dokter']  = $this->dokterModel->getAllDokter();
         $data['jadwal']  = $this->jadwalModel->getAllJadwal();
@@ -34,26 +35,18 @@ class JanjiTemuController
 
     public function store($request)
     {
-        $pasien_id   = $request['pasien_id'];
-        $dokter_id   = $request['dokter_id'];
-        $jadwal_id   = $request['jadwal_id'];
-        $tanggal     = $request['tanggal'];
-        $jam         = $request['jam'];
-
-        // Status tidak perlu dikirim karena default = 'menunggu'
-        
         $result = $this->model->create([
-            'pasien_id' => $pasien_id,
-            'dokter_id' => $dokter_id,
-            'jadwal_id' => $jadwal_id,
-            'tanggal'   => $tanggal,
-            'jam'       => $jam
+            'pasien_id' => $request['pasien_id'],
+            'dokter_id' => $request['dokter_id'],
+            'jadwal_id' => $request['jadwal_id'],
+            'tanggal'   => $request['tanggal'],
+            'jam'       => $request['jam'],
         ]);
 
-        if ($result) {
+        if ($result === true) {
             $_SESSION['success'] = "Janji temu berhasil ditambahkan!";
         } else {
-            $_SESSION['error'] = "Gagal menambahkan janji temu!";
+            $_SESSION['error'] = $result;
         }
 
         header("Location: index.php?page=janji-temu");
@@ -65,11 +58,13 @@ class JanjiTemuController
         // ambil POST dan validasi singkat
         $post = $_POST;
         $ok = $this->model->update($post);
-        if ($ok) {
-            header('Location: index.php?page=janji-temu&msg=updated');
+        if ($ok === true) {
+            $_SESSION['success'] = "Janji temu berhasil diubah!";
         } else {
-            header('Location: index.php?page=janji-temu&err=update_failed');
+            $_SESSION['error'] = $ok;
         }
+        header("Location: index.php?page=janji-temu");
+        exit;
     }
 
     public function delete()
@@ -77,10 +72,16 @@ class JanjiTemuController
         $id = $_POST['janji_id'] ?? null;
         if ($id) {
             $ok = $this->model->delete($id);
-            header('Location: index.php?page=janji-temu&msg=deleted');
+            if ($ok === true) {
+                $_SESSION['success'] = "Janji temu berhasil dihapus!";
+            } else {
+                $_SESSION['error'] = $ok;
+            }
         } else {
-            header('Location: index.php?page=janji-temu&err=missing_id');
+            $_SESSION['error'] = "Janji tidak ada atau tidak terdeteksi!";
         }
+        header("Location: index.php?page=janji-temu");
+        exit;
     }
 
     public function akhiri()
@@ -123,10 +124,22 @@ class JanjiTemuController
         );
 
         if ($res['success']) {
-            header('Location: index.php?page=janji-temu&msg=done');
+            $_SESSION['success-akhiri'] = [
+                'type' => 'success',
+                'message' => 'Janji temu berhasil diselesaikan!'
+            ];
         } else {
-            // bisa juga simpan error ke session untuk ditampilkan di view
-            header('Location: index.php?page=janji-temu&err=' . urlencode($res['message']));
+            // kalau $result['message'] bisa array, ubah jadi string
+            $msg = $res['message'];
+            if (is_array($msg)) {
+                $msg = implode(' | ', $msg); // atau json_encode($msg)
+            }
+            $_SESSION['error-akhiri'] = [
+                'type' => 'danger',
+                'message' => $msg
+            ];
         }
+        header("Location: index.php?page=janji-temu");
+        exit;
     }
 }
