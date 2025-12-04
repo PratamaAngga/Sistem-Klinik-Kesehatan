@@ -22,7 +22,7 @@
 <?php if (isset($_SESSION['success-akhiri'])): ?>
   <div class="alert alert-success alert-dismissible fade show" role="alert">
       <?php 
-        $s = $_SESSION['success']; 
+        $s = $_SESSION['success-akhiri']; 
         echo htmlspecialchars(is_array($s) ? ($s['message'] ?? '') : $s);
       ?>
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -33,7 +33,7 @@
 <?php if (isset($_SESSION['error-akhiri'])): ?>
   <div class="alert alert-danger alert-dismissible fade show" role="alert">
       <?php 
-        $e = $_SESSION['error']; 
+        $e = $_SESSION['error-akhiri']; 
         echo htmlspecialchars(is_array($e) ? ($e['message'] ?? '') : $e);
       ?>
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
