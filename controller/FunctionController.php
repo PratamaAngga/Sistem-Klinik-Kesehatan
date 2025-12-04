@@ -40,4 +40,25 @@ class FunctionController {
 
         return ['daftarJanji' => $data];
     }
+
+    public function getAntrianDokterWithExplain($tanggal)
+    {
+        $data = $this->model->getAntrianDokterHariIni($tanggal);
+        $explain = $this->model->getExplainAnalyzeAntrian($tanggal);
+
+        return [
+            'antrian' => $data,
+            'explain_antrian' => $explain
+        ];
+    }
+
+    public function reminderJanjiHariIni()
+    {
+        $data = $this->model->getReminderJanjiHariIni();
+
+        return [
+            'reminder' => $data
+        ];
+    }
+
 }

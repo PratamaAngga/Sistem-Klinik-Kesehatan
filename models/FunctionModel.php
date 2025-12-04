@@ -51,4 +51,66 @@ class FunctionModel {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getAntrianDokterHariIni($tanggal)
+    {
+        $sql = "
+            SELECT 
+                d.nama as nama_dokter,
+                p.nama as nama_pasien,
+                j.jam_janji
+            FROM janji_temu j
+            JOIN dokter d ON d.dokter_id = j.dokter_id
+            JOIN pasien p ON p.pasien_id = j.pasien_id
+            WHERE j.status = 'Menunggu'
+            AND j.tanggal_janji = :tanggal
+            ORDER BY j.dokter_id, j.jam_janji
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':tanggal' => $tanggal]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getExplainAnalyzeAntrian($tanggal)
+    {
+        $sql = "
+            EXPLAIN ANALYZE
+            SELECT 
+                d.nama,
+                p.nama,
+                j.jam_janji
+            FROM janji_temu j
+            JOIN dokter d ON d.dokter_id = j.dokter_id
+            JOIN pasien p ON p.pasien_id = j.pasien_id
+            WHERE j.status = 'Menunggu'
+            AND j.tanggal_janji = :tanggal
+            ORDER BY j.dokter_id, j.jam_janji
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':tanggal' => $tanggal]);
+
+        return implode("\n", $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    public function getReminderJanjiHariIni()
+    {
+        $sql = "
+            SELECT 
+                j.*, 
+                d.nama as nama_dokter,
+                p.nama as nama_pasien
+            FROM janji_temu j
+            JOIN dokter d ON d.dokter_id = j.dokter_id
+            JOIN pasien p ON p.pasien_id = j.pasien_id
+            WHERE j.status = 'Menunggu'
+            AND j.tanggal_janji = CURRENT_DATE
+            ORDER BY j.jam_janji
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

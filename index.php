@@ -207,21 +207,35 @@ if ($page === 'kelola-obat') {
 } else {
     $controller = new FunctionController();
 
-    // --- FILTER TABEL 1 ---
+    // --- FILTER TABEL 1 (Jadwal Dokter) ---
     $tanggal = $_POST['tanggal'] ?? date("Y-m-d");
+    $modalShow = false;
+    $tanggalAntrianPerDokter = $_POST['tanggal-antrian-per-dokter'] ?? date("Y-m-d");
+    if (isset($_POST['tanggal-antrian-per-dokter'])) {
+        $modalShow = true;
+    }
 
-    // --- FILTER TABEL 2 ---
+    // --- FILTER TABEL 2 (Daftar Janji) ---
     $status = $_POST['status'] ?? "";
 
-    // --- AMBIL DATA ---
+    // --- AMBIL DATA UTAMA ---
     $jadwalData = $controller->jadwalDokterByTanggal(['tanggal' => $tanggal]);
     $janjiData  = $controller->getDaftarJanji($status);
 
+    // --- AMBIL DATA TAMBAHAN UNTUK MODAL ANTRIAN ---
+    $antrianData = $controller->getAntrianDokterWithExplain($tanggalAntrianPerDokter);
+
+    // --- AMBIL DATA REMINDER JANJI HARI INI ---
+    $reminderData = $controller->reminderJanjiHariIni();
+
     // --- DATA UNTUK VIEW ---
-    $tanggal      = $jadwalData['tanggal'];
-    $jadwal       = $jadwalData['jadwal'];
-    $daftarJanji  = $janjiData['daftarJanji'];
-    $filterStatus = $status; // penting untuk dropdown
+    $tanggal           = $jadwalData['tanggal'];
+    $jadwal            = $jadwalData['jadwal'];
+    $daftarJanji       = $janjiData['daftarJanji'];
+    $filterStatus      = $status;                     // dropdown
+    $antrian           = $antrianData['antrian'];     // modal antrian dokter
+    $explain_antrian   = $antrianData['explain_antrian'];
+    $reminder          = $reminderData['reminder'];   // data reminder janji hari ini
 
     $view = "Views/dashboard.php";
 }
@@ -375,6 +389,12 @@ if ($page === 'kelola-obat') {
       });
     </script>
     <script src="assets/js/janji-temu.js"></script>
+    <?php if($modalShow): ?>
+    <script>
+        var modal = new bootstrap.Modal(document.getElementById('modalAntrian'));
+        modal.show();
+    </script>
+    <?php endif; ?>
     <script>
       $(document).on('click', '.btn-edit', function () {
 
