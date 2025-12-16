@@ -329,7 +329,6 @@ if ($page === 'kelola-obat') {
         maxTime: "17:00"
       });
     </script>
-    <script src="assets/js/janji-temu.js"></script>
     <?php if($modalShow): ?>
     <script>
         var modal = new bootstrap.Modal(document.getElementById('modalAntrian'));

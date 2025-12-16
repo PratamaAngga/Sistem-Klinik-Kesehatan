@@ -66,10 +66,10 @@
                                             <i class="fas fa-signature"></i> <a href="index.php?page=rekam-medis&pasien_id=1" ></a>
                                     <?php else: ?>
                                         <a 
-                                            href="index.php?page=tambah-rekam-medis&pasien_id=<?= $pasien['pasien_id']; ?>" 
-                                            class="btn btn-secondary btn-rekam-medis"
+                                            href="index.php?page=rekam-medis&pasien_id=<?= $pasien['pasien_id']; ?>" 
+                                            class="btn btn-info btn-rekam-medis"
                                             title="Tambahkan Rekam Medis Baru">
-                                            <i class="fas fa-file-signature"></i> <a href="index.php?page=rekam-medis&pasien_id=1" ></a>
+                                            <i class="fas fa-signature"></i> <a href="index.php?page=rekam-medis&pasien_id=1" ></a>
                                     <?php endif; ?>
                                     <button 
                                         class="btn btn-warning btn-edit"

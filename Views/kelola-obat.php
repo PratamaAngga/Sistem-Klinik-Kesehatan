@@ -46,9 +46,9 @@
                           </tr>
                         </tfoot>
                         <tbody>
-                        <?php foreach ($dataObat as $obat): ?>
+                        <?php $no=1; foreach ($dataObat as $obat): ?>
                             <tr>
-                                <td><?= $obat['obat_id']; ?></td>
+                                <td><?= $no++; ?></td>
                                 <td><?= $obat['nama_obat']; ?></td>
                                 <td><?= $obat['jenis_obat']; ?></td>
                                 <td><?= $obat['stok']; ?></td>

@@ -162,21 +162,6 @@ class JanjiTemuModel
         return '{' . implode(',', $escaped) . '}';
     }
 
-    /**
-     * Panggil stored procedure yang udah di buat:
-     * procedure update_status_janji_selesai(
-     *   p_janji_id INT,
-     *   p_pasien_id INT,
-     *   p_dokter_id INT,
-     *   p_tanggal_periksa DATE,
-     *   p_diagnosis TEXT,
-     *   p_tindakan TEXT,
-     *   p_obat_ids INT[],
-     *   p_jumlahs INT[],
-     *   p_dosiss TEXT[],
-     *   p_total_biayas NUMERIC[]
-     * )
-     */
     public function akhiriJanji(
         int $janji_id,
         int $pasien_id,
@@ -189,15 +174,18 @@ class JanjiTemuModel
         array $dosiss,
         array $total_biayas
     ) {
-        // Build PG array literals
-        $pg_obat_ids = $this->toPgArrayLiteral($obat_ids);
-        $pg_jumlahs = $this->toPgArrayLiteral($jumlahs);
-        $pg_dosiss = $this->toPgArrayLiteral($dosiss);
+        $pg_obat_ids     = $this->toPgArrayLiteral($obat_ids);
+        $pg_jumlahs      = $this->toPgArrayLiteral($jumlahs);
+        $pg_dosiss       = $this->toPgArrayLiteral($dosiss);
         $pg_total_biayas = $this->toPgArrayLiteral($total_biayas);
 
         try {
-            // Kita panggil CALL procedure langsung.
-            // Gunakan quote untuk tanggal & text agar aman.
+            // === A & I: Atomicity + Isolation ===
+            $this->db->beginTransaction();
+
+            // Isolation level sederhana & aman
+            $this->db->exec("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
+
             $sql = "
                 CALL update_status_janji_selesai(
                     :p_janji_id,
@@ -214,25 +202,34 @@ class JanjiTemuModel
             ";
 
             $stmt = $this->db->prepare($sql);
-            $stmt->bindValue(':p_janji_id', $janji_id, PDO::PARAM_INT);
-            $stmt->bindValue(':p_pasien_id', $pasien_id, PDO::PARAM_INT);
-            $stmt->bindValue(':p_dokter_id', $dokter_id, PDO::PARAM_INT);
-            $stmt->bindValue(':p_tanggal_periksa', $tanggal_periksa);
-            $stmt->bindValue(':p_diagnosis', $diagnosis);
-            $stmt->bindValue(':p_tindakan', $tindakan);
-            // Untuk array, bind sebagai string literal PG array
-            $stmt->bindValue(':p_obat_ids', $pg_obat_ids);
-            $stmt->bindValue(':p_jumlahs', $pg_jumlahs);
-            $stmt->bindValue(':p_dosiss', $pg_dosiss);
-            $stmt->bindValue(':p_total_biayas', $pg_total_biayas);
+            $stmt->execute([
+                ':p_janji_id'        => $janji_id,
+                ':p_pasien_id'       => $pasien_id,
+                ':p_dokter_id'       => $dokter_id,
+                ':p_tanggal_periksa' => $tanggal_periksa,
+                ':p_diagnosis'       => $diagnosis,
+                ':p_tindakan'        => $tindakan,
+                ':p_obat_ids'        => $pg_obat_ids,
+                ':p_jumlahs'         => $pg_jumlahs,
+                ':p_dosiss'          => $pg_dosiss,
+                ':p_total_biayas'    => $pg_total_biayas
+            ]);
 
-            $this->db->beginTransaction();
-            $stmt->execute();
+            // === COMMIT ===
             $this->db->commit();
+
             return ['success' => true];
+
         } catch (PDOException $e) {
-            if ($this->db->inTransaction()) $this->db->rollBack();
-            return ['success' => false, 'message' => $e->getMessage()];
+            // === ROLLBACK ===
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+
+            return [
+                'success' => false,
+                'message' => 'Transaksi gagal: ' . $e->getMessage()
+            ];
         }
     }
 }
