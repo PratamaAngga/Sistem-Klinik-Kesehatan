@@ -98,5 +98,26 @@ document.addEventListener('DOMContentLoaded', function() {
     row.find('.total-bayar-input').val(total ? total : '');
   });
 
+  const dokterSelect = document.getElementById('dokterSelect');
+  const jadwalSelect = document.getElementById('jadwalSelect');
+  jadwalSelect.disabled = true;
+
+  dokterSelect.addEventListener('change', function () {
+    const dokterId = this.value;
+    jadwalSelect.disabled = !dokterId;
+    jadwalSelect.value = '';
+
+    Array.from(jadwalSelect.options).forEach(opt => {
+      if (!opt.value) {
+        opt.style.display = 'block';
+        return;
+      }
+
+      opt.style.display = (opt.dataset.dokter === dokterId)
+        ? 'block'
+        : 'none';
+    });
+  });
+
   // optional: format total_bayar on blur (thousand separator) - but keep raw numeric when submit
 });

@@ -168,7 +168,7 @@
           <!-- Dokter -->
           <div class="mb-3">
             <label class="form-label">Dokter</label>
-            <select name="dokter_id" class="form-select" required>
+            <select name="dokter_id" id="dokterSelect" class="form-select" required>
               <option value="">-- Pilih Dokter --</option>
               <?php foreach ($data['dokter'] as $d): ?>
                 <option value="<?= $d['dokter_id']; ?>">
@@ -181,10 +181,12 @@
           <!-- Jadwal Dokter -->
           <div class="mb-3">
             <label class="form-label">Jadwal Dokter</label>
-            <select name="jadwal_id" class="form-select" required>
+            <select name="jadwal_id" id="jadwalSelect" class="form-select" required>
               <option value="">-- Pilih Jadwal --</option>
               <?php foreach ($data['jadwal'] as $j): ?>
-                <option value="<?= $j['jadwal_id']; ?>">
+                <option 
+                  value="<?= $j['jadwal_id']; ?>"
+                  data-dokter="<?= $j['dokter_id']; ?>">
                   <?= 'Tanggal: ' . $j['tanggal_praktek'] . ' | Jam: ' . $j['jam_mulai'] . ' - ' . $j['jam_selesai']; ?>
                 </option>
               <?php endforeach; ?>
